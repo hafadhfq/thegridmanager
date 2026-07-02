@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GridManager - Welcome</title>
+    <link rel="stylesheet" href="style2.css">
+    <style>
+        /* Tambahan CSS Khusus Landing Page agar lebih 'Rame' */
+        
+        /* Hero Section dengan Border Neon */
+        .hero-text {
+            text-align: center;
+            padding: 25px 20px;
+            background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+            border: 1px solid #333;
+            border-top: 4px solid #D32F2F;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(211, 47, 47, 0.2);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efek garis miring di hero */
+        .hero-text::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -50%;
+            width: 200%; height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.2) 10px,
+                rgba(0,0,0,0.2) 20px
+            );
+            pointer-events: none;
+        }
+
+        .hero-text h2 {
+            font-family: 'Racing Sans One', cursive;
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 0px #000;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text p {
+            font-size: 13px;
+            color: #cccccc;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Button Container agar tombol rapi di tengah */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        /* Modifikasi Button Glossy agar pas di tema gelap */
+        .btn-glossy {
+            width: 100%; /* Full width di landing page agar lebih tegas */
+            min-width: unset;
+            font-size: 18px;
+            padding: 18px;
+            text-transform: uppercase;
+        }
+
+        /* Feature List dengan Ikon Besar */
+        .feature-list li {
+            background: linear-gradient(90deg, #1a1a1a, #252525);
+            border: 1px solid #333;
+            border-left: 4px solid #D32F2F;
+            color: #fff;
+        }
+
+        .feature-list li strong {
+            color: #ff5252;
+            font-family: 'Racing Sans One', cursive;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .icon-svg {
+            fill: #ff5252;
+            filter: drop-shadow(0 0 5px rgba(255, 82, 82, 0.5));
+        }
+
+        /* Server Info Gaya Dashboard */
+        .server-info {
+            background: #000;
+            border: 1px solid #2e7d32;
+            box-shadow: inset 0 0 15px rgba(46, 125, 50, 0.2);
+        }
+        
+        .server-info span {
+            color: #66bb6a;
+            text-shadow: 0 0 8px rgba(102, 187, 106, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header Utama -->
+        <div class="header-dashboard" style="justify-content: center;">
+            <h1>GridManager</h1>
+        </div>
+
+        <div class="content">
+            <!-- Hero Section -->
+            <div class="hero-text">
+                <h2>Jadilah Juara Dunia!</h2>
+                <p>Kelola tim F1 impianmu, atur strategi pit stop, dan kembangkan mesin turbo. Gratis, ringan, dan siap untuk perangkat WAP.</p>
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="button-group">
+                <a href="register.html" class="btn-glossy btn-primary">🚀 DAFTAR SEKARANG</a>
+                <a href="login.html" class="btn-glossy btn-secondary">🔑 LOGIN MEMBER</a>
+            </div>
+
+            <!-- Fitur Unggulan -->
+            <ul class="feature-list">
+                <li>
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.73 8.87c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    <div>
+                        <strong>Manajemen Mesin</strong>
+                        Upgrade V6 Turbo & Aero Package.
+                    </div>
+                </li>
+                <li>
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                    <div>
+                        <strong>Klasemen Real-time</strong>
+                        Bersaing dengan 21 manajer lain.
+                    </div>
+                </li>
+                <li>
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                    <div>
+                        <strong>Strategi Balap</strong>
+                        Tentukan kapan harus Pit Stop.
+                    </div>
+                </li>
+            </ul>
+
+            <!-- Info Server -->
+            <div class="server-info">
+                <span>🟢 SERVER ONLINE</span>
+                <p style="color: #888; margin-top: 4px;">Musim 1 | Sirkuit: Monaco GP</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2026 GridManager Project</p>
+            <p>Optimized for Mobile Web & WAP Edition</p>
+        </div>
+    </div>
+
+</body>
+  </html>
+  
