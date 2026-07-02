@@ -1,0 +1,379 @@
+/* Import Font Unik Racing */
+@import url('https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Segoe+UI:wght@400;600;700&display=swap');
+
+/* Reset Total */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body, html {
+    width: 100%;
+    height: 100dvh;
+    overflow-x: hidden;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+/* Container Full Screen Putih */
+.app-container {
+    width: 100%;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+}
+
+/* Header Merah-Putih */
+.header {
+    background: linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%);
+    padding: 24px 20px;
+    text-align: center;
+    border-bottom: 3px solid #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.header h1 {
+    /* Menggunakan Font Unik Racing */
+    font-family: 'Racing Sans One', cursive; 
+    color: #ffffff;
+    font-size: 28px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 4px;
+}
+
+.header p {
+    color: #ffebee;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+}
+
+/* Content Area */
+.content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+/* Hero Section */
+.hero-text {
+    text-align: center;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    width: 100%;
+}
+
+.hero-text h2 {
+    font-size: 18px;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.hero-text p {
+    font-size: 13px;
+    color: #666666;
+    line-height: 1.6;
+}
+
+/* Button Glossy dengan Font Unik */
+.btn-glossy {
+    display: inline-block;
+    width: auto;
+    min-width: 200px;
+    padding: 16px 32px;
+    border-radius: 12px;
+    text-align: center;
+    text-decoration: none;
+    /* Font Unik di Button */
+    font-family: 'Racing Sans One', cursive; 
+    font-size: 16px;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s ease;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    margin: 0 auto;
+}
+
+.btn-primary {
+    background: linear-gradient(180deg, #ef5350 0%, #c62828 45%, #b71c1c 50%, #d32f2f 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.btn-secondary {
+    background: linear-gradient(180deg, #424242 0%, #212121 45%, #1a1a1a 50%, #333333 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-glossy:active { transform: scale(0.97); }
+
+/* Kilauan Pantulan Atas */
+.btn-glossy::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+    border-radius: 12px 12px 0 0;
+    pointer-events: none;
+}
+
+/* =========================================
+   FEATURE LIST FULL LAYAR + IKON SVG
+   ========================================= */
+.feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Full Lebar Layar Kanan-Kiri */
+    width: 100%; 
+    margin: 0;
+    padding: 0;
+}
+
+.feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 13px;
+    padding: 16px 20px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-left: 5px solid #D32F2F;
+    border-radius: 10px;
+    color: #333333;
+    line-height: 1.5;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    width: 100%; /* Memaksa elemen list memenuhi container */
+}
+
+/* Styling Ikon SVG di dalam List */
+.icon-svg {
+    width: 24px;
+    height: 24px;
+    fill: #D32F2F;
+    flex-shrink: 0; /* Ikon tidak boleh gepeng */
+}
+
+.feature-list li strong {
+    color: #D32F2F;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* Server Info */
+.server-info {
+    background: #ffffff;
+    border: 2px solid #2e7d32;
+    padding: 14px;
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(46, 125, 50, 0.1);
+}
+
+.server-info span {
+    font-size: 12px;
+    color: #2e7d32;
+    font-weight: 800;
+    display: block;
+    letter-spacing: 1px;
+}
+
+.server-info p {
+    font-size: 11px;
+    color: #555555;
+    margin-top: 4px;
+}
+
+/* Footer Putih-Abu */
+.footer {
+    text-align: center;
+    padding: 20px;
+    padding-bottom: 30px;
+    background: linear-gradient(to top, #f5f5f5, #ffffff);
+    border-top: 1px solid #e0e0e0;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.footer p:first-child { color: #888888; font-size: 11px; font-weight: 600; }
+.footer p:last-child { font-size: 9px; color: #aaaaaa; margin-top: 4px; }
+
+
+/* =========================================
+   DASHBOARD MEMBER STYLING
+   ========================================= */
+
+/* Header Dashboard Khusus (Lebih Kompak) */
+.header-dashboard {
+    background: linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%);
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.header-dashboard h1 {
+    font-family: 'Racing Sans One', cursive;
+    color: #ffffff;
+    font-size: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin: 0;
+}
+
+.user-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: #ffffff;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Grid Statistik Dashboard */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-left: 4px solid #D32F2F;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.stat-value {
+    font-family: 'Racing Sans One', cursive;
+    font-size: 22px;
+    color: #D32F2F;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: #888888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.progress-bar-bg {
+    height: 4px;
+    background: #f0f0f0;
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #D32F2F, #ef5350);
+    border-radius: 2px;
+}
+
+/* Menu Navigasi Dashboard */
+.dash-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.dash-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-left: 5px solid #D32F2F;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #333333;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.dash-menu-item:active {
+    transform: scale(0.98);
+    background: #fff5f5;
+}
+
+.dash-icon {
+    width: 28px;
+    height: 28px;
+    fill: #D32F2F;
+    flex-shrink: 0;
+}
+
+.dash-text strong {
+    display: block;
+    font-size: 14px;
+    color: #1a1a1a;
+    font-weight: 700;
+}
+
+.dash-text span {
+    font-size: 11px;
+    color: #888888;
+}
+
+/* Status Garasi Mini */
+.garage-status {
+    background: #ffffff;
+    border: 2px solid #D32F2F;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.1);
+}
+
+.garage-status .status-title {
+    font-family: 'Racing Sans One', cursive;
+    font-size: 14px;
+    color: #D32F2F;
+    margin-bottom: 4px;
+}
+
+.garage-status .status-desc {
+    font-size: 11px;
+    color: #666666;
+}
+
