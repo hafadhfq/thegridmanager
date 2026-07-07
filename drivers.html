@@ -1,1 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drivers - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 90px;
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-family: 'Racing Sans One'; font-size: 20px; color: white; text-decoration: none; }
+        .logo span { color: #ff1801; }
+
+        /* --- DRIVER CARDS --- */
+        .driver-section { padding: 20px; }
+        .section-title {
+            font-family: 'Racing Sans One';
+            font-size: 18px;
+            color: white;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff1801;
+            padding-left: 10px;
+        }
+
+        .driver-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        /* Header Kartu Driver */
+        .driver-header {
+            background: linear-gradient(90deg, #222, #1a1a1a);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .driver-number {
+            font-family: 'Racing Sans One';
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.1);
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+
+        .driver-avatar {
+            width: 60px; height: 60px;
+            background: #333;
+            border-radius: 50%;
+            border: 2px solid #ff1801;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px;
+        }
+
+        .driver-info h3 { font-size: 18px; color: white; margin-bottom: 2px; }
+        .driver-info p { font-size: 12px; color: #888; }
+        .flag { font-size: 14px; margin-right: 5px; }
+
+        /* Statistik & Atribut */
+        .driver-stats { padding: 15px; }
+        
+        .stat-row { margin-bottom: 12px; }
+        .stat-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; color: #ccc; }
+        .stat-bar-bg { height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+        .stat-bar-fill { height: 100%; border-radius: 3px; }
+
+        /* Warna Bar Atribut */
+        .fill-speed { background: #ff1801; }
+        .fill-consistency { background: #0055ff; }
+        .fill-overtaking { background: #ffd700; }
+
+        /* Footer Kartu (Kontrak & Gaji) */
+        .driver-footer {
+            background: #151515;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #333;
+        }
+
+        .salary-info { font-size: 12px; }
+        .salary-val { color: #00ff00; font-weight: bold; }
+        
+        .contract-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .contract-btn:hover { background: #ff1801; }
+
+        /* Reserve Driver (Kecil) */
+        .reserve-card {
+            background: #1a1a1a;
+            border: 1px dashed #444;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.8;
+        }
+        .reserve-avatar { width: 40px; height: 40px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; border-top: 1px solid #333;
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
+        }
+        .nav-link { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-link.active { color: #ff1801; }
+        .nav-ico { display: block; font-size: 22px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <a href="market.html" style="font-size: 12px; color: #aaa; text-decoration: none;">🛒 Market</a>
+    </div>
+
+    <!-- Main Drivers -->
+    <div class="driver-section">
+        <div class="section-title">LINEUP UTAMA</div>
+
+        <!-- Driver 1 -->
+        <div class="driver-card">
+            <div class="driver-number">16</div>
+            <div class="driver-header">
+                <div class="driver-avatar">👨‍✈️</div>
+                <div class="driver-info">
+                    <h3>Charles Leclerc</h3>
+                    <p><span class="flag">🇲🇨</span> Monaco | Age: 28</p>
+                </div>
+            </div>
+            
+            <div class="driver-stats">
+                <div class="stat-row">
+                    <div class="stat-label"><span>Speed</span> <span>92</span></div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill fill-speed" style="width: 92%;"></div></div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label"><span>Konsistensi</span> <span>85</span></div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill fill-consistency" style="width: 85%;"></div></div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label"><span>Overtaking</span> <span>88</span></div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill fill-overtaking" style="width: 88%;"></div></div>
+                </div>
+            </div>
+
+            <div class="driver-footer">
+                <div class="salary-info">
+                    Gaji: <span class="salary-val">$5.2M / Musim</span>
+                </div>
+                <button class="contract-btn">Kontrak (2 Thn)</button>
+            </div>
+        </div>
+
+        <!-- Driver 2 (Player) -->
+        <div class="driver-card" style="border-color: #ff1801;">
+            <div class="driver-number">88</div>
+            <div class="driver-header">
+                <div class="driver-avatar">👤</div>
+                <div class="driver-info">
+                    <h3>YOU (Player)</h3>
+                    <p><span class="flag">🇮🇩</span> Indonesia | Age: 24</p>
+                </div>
+            </div>
+            
+            <div class="driver-stats">
+                <div class="stat-row">
+                    <div class="stat-label"><span>Speed</span> <span>80</span></div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill fill-speed" style="width: 80%;"></div></div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label"><span>Konsistensi</span> <span>75</span></div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill fill-consistency" style="width: 75%;"></div></div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label"><span>Overtaking</span> <span>82</span></div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill fill-overtaking" style="width: 82%;"></div></div>
+                </div>
+            </div>
+
+            <div class="driver-footer">
+                <div class="salary-info">
+                    Gaji: <span class="salary-val">$1.5M / Musim</span>
+                </div>
+                <button class="contract-btn">Perpanjang</button>
+            </div>
+        </div>
+
+        <!-- Reserve Driver -->
+        <div class="section-title" style="margin-top: 30px;">RESERVE DRIVER</div>
+        <div class="reserve-card">
+            <div class="reserve-avatar">👦</div>
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">Kimi Antonelli</div>
+                <div style="font-size: 11px; color: #888;">Siap dipanggil jika terjadi cedera</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-link"><span class="nav-ico">🏠</span>Home</a>
+        <a href="race-hub.html" class="nav-link"><span class="nav-ico">🚩</span>Race</a>
+        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
+        <a href="drivers.html" class="nav-link active"><span class="nav-ico">🏎️</span>Driver</a>
+    </div>
+
+</body>
+</html>
 
