@@ -1,1 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 90px;
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-family: 'Racing Sans One'; font-size: 20px; color: white; text-decoration: none; }
+        .logo span { color: #ff1801; }
+
+        /* --- BALANCE CARD --- */
+        .balance-card {
+            margin: 20px;
+            background: linear-gradient(135deg, #1a1a1a, #252525);
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .balance-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-amount { font-family: 'Racing Sans One'; font-size: 36px; color: #00ff00; margin: 10px 0; }
+        .balance-trend { font-size: 12px; color: #00ff00; background: rgba(0, 255, 0, 0.1); padding: 4px 10px; border-radius: 10px; display: inline-block; }
+
+        /* --- BUDGET CAP WIDGET --- */
+        .budget-cap {
+            margin: 0 20px 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        .bc-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; }
+        .bc-title { color: #fff; font-weight: bold; }
+        .bc-limit { color: #ff1801; }
+        .bc-bar-bg { height: 10px; background: #333; border-radius: 5px; overflow: hidden; }
+        .bc-bar-fill { height: 100%; width: 65%; background: linear-gradient(90deg, #0055ff, #00d2be); transition: width 1s; }
+        .bc-desc { font-size: 10px; color: #666; margin-top: 8px; text-align: right; }
+
+        /* --- TRANSACTION LIST --- */
+        .section-title {
+            padding: 0 20px;
+            font-family: 'Racing Sans One';
+            font-size: 18px;
+            color: white;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff1801;
+            padding-left: 10px;
+        }
+
+        .transaction-list { padding: 0 20px; }
+        
+        .trans-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #222;
+        }
+        .trans-left { display: flex; align-items: center; gap: 12px; }
+        .trans-icon { 
+            width: 36px; height: 36px; 
+            background: #222; border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .trans-info h4 { font-size: 14px; color: white; margin-bottom: 2px; }
+        .trans-info p { font-size: 11px; color: #666; }
+        
+        .trans-amount { font-weight: bold; font-size: 14px; }
+        .amount-pos { color: #00ff00; }
+        .amount-neg { color: #ff1801; }
+
+        /* --- SPONSOR SLOT --- */
+        .sponsor-slot {
+            margin: 20px;
+            background: #1a1a1a;
+            border: 1px dashed #444;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .sponsor-slot:hover { border-color: #ffd700; background: #222; }
+        .ss-icon { font-size: 24px; margin-bottom: 5px; }
+        .ss-text { font-size: 12px; color: #888; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; border-top: 1px solid #333;
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
+        }
+        .nav-link { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-link.active { color: #ffd700; } /* Gold for finance */
+        .nav-ico { display: block; font-size: 22px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <a href="sponsors.html" style="font-size: 12px; color: #aaa; text-decoration: none;">🤝 Sponsor</a>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+        <div class="balance-label">Total Kas Tim</div>
+        <div class="balance-amount">$12,500,000</div>
+        <div class="balance-trend">▲ +$2.1M Bulan Ini</div>
+    </div>
+
+    <!-- Budget Cap Widget -->
+    <div class="budget-cap">
+        <div class="bc-header">
+            <span class="bc-title">BUDGET CAP USAGE</span>
+            <span class="bc-limit">$135M / $140M</span>
+        </div>
+        <div class="bc-bar-bg">
+            <div class="bc-bar-fill"></div>
+        </div>
+        <div class="bc-desc">Sisa kuota: $5,000,000</div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="section-title">RIWAYAT TRANSAKSI</div>
+    <div class="transaction-list">
+        
+        <div class="trans-item">
+            <div class="trans-left">
+                <div class="trans-icon">🏆</div>
+                <div class="trans-info">
+                    <h4>Prize Money P4</h4>
+                    <p>Hadiah Konstruktor</p>
+                </div>
+            </div>
+            <div class="trans-amount amount-pos">+$4,200,000</div>
+        </div>
+
+        <div class="trans-item">
+            <div class="trans-left">
+                <div class="trans-icon">🧬</div>
+                <div class="trans-info">
+                    <h4>R&D Front Wing</h4>
+                    <p>Pengembangan Part</p>
+                </div>
+            </div>
+            <div class="trans-amount amount-neg">-$850,000</div>
+        </div>
+
+        <div class="trans-item">
+            <div class="trans-left">
+                <div class="trans-icon">👨‍✈️</div>
+                <div class="trans-info">
+                    <h4>Gaji Driver</h4>
+                    <p>Pembayaran Bulanan</p>
+                </div>
+            </div>
+            <div class="trans-amount amount-neg">-$550,000</div>
+        </div>
+
+        <div class="trans-item">
+            <div class="trans-left">
+                <div class="trans-icon">🤝</div>
+                <div class="trans-info">
+                    <h4>Sponsor GridOil</h4>
+                    <p>Cicilan Kontrak</p>
+                </div>
+            </div>
+            <div class="trans-amount amount-pos">+$1,000,000</div>
+        </div>
+
+    </div>
+
+    <!-- Add Sponsor Slot -->
+    <div class="sponsor-slot">
+        <div class="ss-icon">➕</div>
+        <div class="ss-text">Cari Sponsor Baru</div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-link"><span class="nav-ico">🏠</span>Home</a>
+        <a href="race-hub.html" class="nav-link"><span class="nav-ico">🚩</span>Race</a>
+        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
+        <a href="finance.html" class="nav-link active"><span class="nav-ico">💰</span>Keuangan</a>
+    </div>
+
+</body>
+</html>
 
