@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grid Strategist Mobile</title>
+    <title>Grid Strategist - Mobile Fixed</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,8 +15,9 @@
             --pit-color: #00d2be;
             --push-color: #ff1801;
             --defend-color: #0055ff;
-            /* Safe area for mobile browsers */
+            /* Fallback for older browsers */
             --safe-bottom: env(safe-area-inset-bottom, 20px); 
+            --footer-height: 160px; /* Estimasi tinggi footer di HP */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -25,10 +26,10 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             font-family: 'Roboto', sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            /* PERBAIKAN UTAMA: Gunakan dvh dan izinkan scroll vertikal */
+            min-height: 100dvh; 
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         /* --- HEADER --- */
@@ -39,25 +40,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0;
-            z-index: 10;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
         .brand { font-family: 'Racing Sans One'; font-size: 20px; color: white; font-style: italic; }
         .brand span { color: var(--accent); }
         .track-info { text-align: right; font-size: 11px; color: #888; line-height: 1.2; }
         .track-info b { color: white; font-size: 12px; }
 
-        /* --- MAIN CONTENT (SCROLLABLE) --- */
+        /* --- MAIN CONTENT --- */
         .main-container {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            /* Padding bottom besar agar konten tidak tertutup footer/nav bar */
-            padding-bottom: 180px; 
+            /* PERBAIKAN: Beri ruang di bawah agar konten tidak tertutup footer */
+            padding-bottom: calc(var(--footer-height) + var(--safe-bottom) + 20px);
         }
 
-        /* TIMING SECTION (Top on Mobile) */
+        /* TIMING SECTION */
         .timing-section {
             background: var(--bg-panel);
             border-bottom: 1px solid var(--border);
@@ -103,14 +101,13 @@
 
         /* COMMENTARY SECTION */
         .comm-section {
-            flex: 1;
             background: #121212;
-            min-height: 300px; /* Ensure scrollable area */
+            min-height: 400px; /* Memastikan area scroll cukup panjang */
         }
         .comm-feed {
             padding: 15px;
             display: flex;
-            flex-direction: column-reverse; /* Newest at bottom visually if we didn't use prepend, but here we prepend so reverse makes sense for chat style */
+            flex-direction: column-reverse;
         }
         .c-item {
             margin-bottom: 12px;
@@ -134,7 +131,7 @@
             background: #1a1a1a;
             border-top: 1px solid var(--border);
             padding: 15px 20px;
-            /* Critical: Add padding for mobile nav bars */
+            /* PERBAIKAN: Padding dinamis untuk safe area HP */
             padding-bottom: calc(15px + var(--safe-bottom)); 
             z-index: 100;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
@@ -190,8 +187,6 @@
         .btn-pit { background: var(--pit-color); color: #000; }
         .btn-push { background: var(--push-color); }
         .btn-defend { background: var(--defend-color); }
-
-        /* Active State for touch */
         .btn-action:active { transform: scale(0.96); opacity: 0.9; }
 
     </style>
@@ -210,7 +205,7 @@
     <!-- Scrollable Main Content -->
     <div class="main-container">
         
-        <!-- Timing (Moved to Top for Mobile Priority) -->
+        <!-- Timing -->
         <div class="timing-section">
             <div class="panel-head">Live Classification</div>
             <div class="timing-list" id="timing-list"></div>
@@ -318,7 +313,7 @@
                 if(d.isP) {
                     bars = `
                         <div class="resources">
-                            <span>⛽</span><div class="res-bar"><div class="res-fill fill-fuel" style="width:${d.fuel}%"></div></div>
+                            <span></span><div class="res-bar"><div class="res-fill fill-fuel" style="width:${d.fuel}%"></div></div>
                             <span>🍥</span><div class="res-bar"><div class="res-fill fill-tire" style="width:${d.tire}%"></div></div>
                         </div>
                     `;
@@ -405,7 +400,7 @@
                     if(d.tire < 20) performance = 0.7;
                     if(d.fuel <= 0) { 
                         d.status = "DNF"; 
-                        addLog(` ${d.n} kehabisan bahan bakar!`, "danger"); 
+                        addLog(`💥 ${d.n} kehabisan bahan bakar!`, "danger"); 
                     }
 
                     if(d.status === "Track" && d.fuel > 0) {
