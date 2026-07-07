@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grand Prix Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grid Strategist Mobile</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,9 +15,11 @@
             --pit-color: #00d2be;
             --push-color: #ff1801;
             --defend-color: #0055ff;
+            /* Safe area for mobile browsers */
+            --safe-bottom: env(safe-area-inset-bottom, 20px); 
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body {
             background-color: var(--bg-dark);
@@ -32,36 +34,36 @@
         /* --- HEADER --- */
         .app-header {
             background: var(--bg-panel);
-            padding: 10px 20px;
+            padding: 15px 20px;
             border-bottom: 2px solid var(--accent);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 60px;
             flex-shrink: 0;
+            z-index: 10;
         }
-        .brand { font-family: 'Racing Sans One'; font-size: 22px; color: white; }
+        .brand { font-family: 'Racing Sans One'; font-size: 20px; color: white; font-style: italic; }
         .brand span { color: var(--accent); }
-        .track-info { text-align: right; font-size: 12px; color: #888; }
-        .track-info b { color: white; }
+        .track-info { text-align: right; font-size: 11px; color: #888; line-height: 1.2; }
+        .track-info b { color: white; font-size: 12px; }
 
-        /* --- MAIN GRID --- */
-        .main-grid {
-            display: flex;
+        /* --- MAIN CONTENT (SCROLLABLE) --- */
+        .main-container {
             flex: 1;
-            overflow: hidden;
-        }
-
-        /* LEFT: COMMENTARY */
-        .comm-section {
-            flex: 1;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            background: #121212;
-            border-right: 1px solid var(--border);
+            /* Padding bottom besar agar konten tidak tertutup footer/nav bar */
+            padding-bottom: 180px; 
+        }
+
+        /* TIMING SECTION (Top on Mobile) */
+        .timing-section {
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
         }
         .panel-head {
-            padding: 8px 15px;
+            padding: 10px 15px;
             background: #222;
             font-size: 11px;
             font-weight: bold;
@@ -69,160 +71,129 @@
             color: var(--accent);
             border-bottom: 1px solid var(--border);
         }
-        .comm-feed {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            display: flex;
-            flex-direction: column-reverse;
-        }
-        .c-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #1a1a1a;
-            border-radius: 6px;
-            border-left: 3px solid #333;
-            font-size: 13px;
-            line-height: 1.4;
-            animation: slideIn 0.3s ease;
-        }
-        .c-item.strat { border-left-color: var(--pit-color); background: rgba(0, 210, 190, 0.1); }
-        .c-item.danger { border-left-color: var(--accent); color: #ffaaaa; }
-        .c-lap { font-weight: bold; color: #666; font-size: 10px; margin-right: 8px; }
-
-        /* RIGHT: TIMING */
-        .timing-section {
-            width: 350px;
-            background: var(--bg-panel);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-        }
-        .timing-list { flex: 1; overflow-y: auto; }
         
         .t-row {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 12px 15px;
             border-bottom: 1px solid #222;
-            font-size: 13px;
+            font-size: 14px;
         }
-        .t-row.player { background: rgba(255, 215, 0, 0.1); border-left: 3px solid gold; }
+        .t-row.player { background: rgba(255, 215, 0, 0.08); border-left: 3px solid gold; }
         
-        .t-pos { width: 30px; font-weight: bold; color: #666; }
-        .t-driver { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .d-name { font-weight: 600; color: white; display: flex; align-items: center; gap: 5px; }
-        .team-dot { width: 4px; height: 12px; border-radius: 2px; }
+        .t-pos { width: 25px; font-weight: bold; color: #666; font-size: 14px; }
+        .t-driver { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .d-name { font-weight: 600; color: white; display: flex; align-items: center; gap: 6px; font-size: 15px; }
+        .team-dot { width: 4px; height: 14px; border-radius: 2px; }
         
-        /* Resource Bars */
-        .resources { display: flex; gap: 10px; font-size: 10px; color: #888; }
-        .res-bar { width: 40px; height: 4px; background: #333; border-radius: 2px; position: relative; top: 3px; }
+        .resources { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #888; }
+        .res-bar { width: 40px; height: 4px; background: #333; border-radius: 2px; position: relative; top: 1px; }
         .res-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
         .fill-fuel { background: #00d2be; }
         .fill-tire { background: #ffaa00; }
 
         .t-gap { 
             font-family: monospace; 
-            font-size: 12px; 
+            font-size: 13px; 
             color: #888; 
             text-align: right;
             min-width: 60px;
+            font-weight: 500;
         }
 
-        /* --- FOOTER: STRATEGY DASHBOARD --- */
+        /* COMMENTARY SECTION */
+        .comm-section {
+            flex: 1;
+            background: #121212;
+            min-height: 300px; /* Ensure scrollable area */
+        }
+        .comm-feed {
+            padding: 15px;
+            display: flex;
+            flex-direction: column-reverse; /* Newest at bottom visually if we didn't use prepend, but here we prepend so reverse makes sense for chat style */
+        }
+        .c-item {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            border-left: 3px solid #333;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .c-item.strat { border-left-color: var(--pit-color); background: rgba(0, 210, 190, 0.1); }
+        .c-item.danger { border-left-color: var(--accent); color: #ffaaaa; }
+        .c-lap { font-weight: bold; color: #666; font-size: 10px; margin-right: 8px; display: inline-block; width: 25px;}
+
+        /* --- FIXED BOTTOM CONTROL PANEL --- */
         .strategy-footer {
-            height: 90px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
             background: #1a1a1a;
             border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            gap: 20px;
-            flex-shrink: 0;
+            padding: 15px 20px;
+            /* Critical: Add padding for mobile nav bars */
+            padding-bottom: calc(15px + var(--safe-bottom)); 
             z-index: 100;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .lap-counter {
-            font-family: 'Racing Sans One';
-            font-size: 32px;
-            color: white;
-            border-right: 1px solid #333;
-            padding-right: 20px;
-            margin-right: 10px;
-            min-width: 100px;
-            text-align: center;
-        }
-        .lap-total { font-size: 14px; color: #666; font-family: 'Roboto'; }
-
-        .controls-area {
-            flex: 1;
+        .footer-top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .mode-selector {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+        .lap-counter {
+            font-family: 'Racing Sans One';
+            font-size: 28px;
+            color: white;
+            font-style: italic;
         }
-        .mode-label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: bold; }
-        select {
+        .lap-total { font-size: 14px; color: #666; font-family: 'Roboto'; font-style: normal; }
+
+        .mode-selector select {
             background: #333; color: white; border: 1px solid #555;
-            padding: 5px; border-radius: 4px; font-size: 12px;
+            padding: 8px 12px; border-radius: 6px; font-size: 12px;
+            outline: none;
         }
 
         .action-buttons {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
         }
         
         .btn-action {
-            padding: 10px 15px;
-            border-radius: 6px;
+            padding: 12px 5px;
+            border-radius: 8px;
             border: none;
             font-weight: bold;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
             text-transform: uppercase;
-            transition: 0.2s;
+            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 90px;
-            color: white;
+            justify-content: center;
+            gap: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .btn-action small { font-size: 9px; opacity: 0.8; font-weight: normal; margin-top: 2px; }
+        .btn-action small { font-size: 10px; opacity: 0.8; font-weight: normal; text-transform: none; }
         
-        .btn-pit { background: var(--pit-color); color: black; }
-        .btn-pit:hover { filter: brightness(1.1); }
-        
+        .btn-pit { background: var(--pit-color); color: #000; }
         .btn-push { background: var(--push-color); }
-        .btn-push:hover { filter: brightness(1.1); }
-        
         .btn-defend { background: var(--defend-color); }
-        .btn-defend:hover { filter: brightness(1.1); }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Active State for touch */
+        .btn-action:active { transform: scale(0.96); opacity: 0.9; }
 
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .main-grid { flex-direction: column; }
-            .timing-section { width: 100%; height: 40%; order: -1; border-bottom: 1px solid var(--border); }
-            .comm-section { height: 60%; }
-            
-            .strategy-footer { 
-                height: auto; 
-                flex-direction: column; 
-                padding: 15px; 
-                gap: 15px; 
-            }
-            .controls-area { width: 100%; flex-direction: column; gap: 15px; }
-            .action-buttons { width: 100%; justify-content: space-between; }
-            .btn-action { flex: 1; padding: 10px 5px; }
-            .lap-counter { width: 100%; border-right: none; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 10px; }
-        }
     </style>
 </head>
 <body>
@@ -231,13 +202,20 @@
     <div class="app-header">
         <div class="brand">GRID <span>STRATEGIST</span></div>
         <div class="track-info">
-            <div>Circuit: <b>Monza 🇮🇹</b></div>
+            <div>Circuit: <b>Monza 🇹</b></div>
             <div>Weather: <b>Sunny (28°C)</b></div>
         </div>
     </div>
 
-    <!-- Main Grid -->
-    <div class="main-grid">
+    <!-- Scrollable Main Content -->
+    <div class="main-container">
+        
+        <!-- Timing (Moved to Top for Mobile Priority) -->
+        <div class="timing-section">
+            <div class="panel-head">Live Classification</div>
+            <div class="timing-list" id="timing-list"></div>
+        </div>
+
         <!-- Commentary -->
         <div class="comm-section">
             <div class="panel-head">Race Control & Engineer Radio</div>
@@ -246,43 +224,36 @@
             </div>
         </div>
 
-        <!-- Timing -->
-        <div class="timing-section">
-            <div class="panel-head">Live Classification</div>
-            <div class="timing-list" id="timing-list"></div>
-        </div>
     </div>
 
-    <!-- Strategy Footer -->
+    <!-- Fixed Strategy Footer -->
     <div class="strategy-footer">
-        <div class="lap-counter">
-            <span id="lap-num">0</span><span class="lap-total">/53</span>
-        </div>
-        
-        <div class="controls-area">
+        <div class="footer-top-row">
+            <div class="lap-counter">
+                LAP <span id="lap-num">0</span><span class="lap-total">/53</span>
+            </div>
             <div class="mode-selector">
-                <div class="mode-label">Engine Mode</div>
                 <select id="engine-mode" onchange="updateMode()">
-                    <option value="save">SAVE (Hemat Bensin/Ban)</option>
-                    <option value="balanced" selected>BALANCED (Normal)</option>
-                    <option value="push">PUSH (Cepat tapi Boros)</option>
+                    <option value="save">SAVE MODE</option>
+                    <option value="balanced" selected>BALANCED</option>
+                    <option value="push">PUSH MODE</option>
                 </select>
             </div>
+        </div>
 
-            <div class="action-buttons">
-                <button class="btn-action btn-pit" onclick="commandPit()">
-                    BOX BOX
-                    <small>Ganti Ban</small>
-                </button>
-                <button class="btn-action btn-push" onclick="commandPush()">
-                    ATTACK
-                    <small>Overtake</small>
-                </button>
-                <button class="btn-action btn-defend" onclick="commandDefend()">
-                    DEFEND
-                    <small>Jaga Posisi</small>
-                </button>
-            </div>
+        <div class="action-buttons">
+            <button class="btn-action btn-pit" onclick="commandPit()">
+                BOX BOX
+                <small>Ganti Ban</small>
+            </button>
+            <button class="btn-action btn-push" onclick="commandPush()">
+                ATTACK
+                <small>Overtake</small>
+            </button>
+            <button class="btn-action btn-defend" onclick="commandDefend()">
+                DEFEND
+                <small>Jaga Posisi</small>
+            </button>
         </div>
     </div>
 
@@ -343,7 +314,6 @@
                 const row = document.createElement('div');
                 row.className = `t-row ${d.isP ? 'player' : ''}`;
                 
-                // Only show bars for player to save space, or all if you prefer
                 let bars = "";
                 if(d.isP) {
                     bars = `
@@ -420,11 +390,9 @@
 
             drivers.forEach(d => {
                 if(d.status === "Track") {
-                    // 1. Consumption
                     let fuelBurn = 1.0;
                     let tireWear = 1.0;
 
-                    // Player Strategy Effect
                     if(d.isP) {
                         if(playerMode === "save") { fuelBurn = 0.5; tireWear = 0.5; }
                         if(playerMode === "push") { fuelBurn = 2.5; tireWear = 2.5; }
@@ -433,19 +401,15 @@
                     d.fuel -= fuelBurn;
                     d.tire -= tireWear;
 
-                    // 2. Performance Penalty
                     let performance = 1.0;
-                    if(d.tire < 20) performance = 0.7; // Slow on worn tires
+                    if(d.tire < 20) performance = 0.7;
                     if(d.fuel <= 0) { 
                         d.status = "DNF"; 
-                        addLog(`💥 ${d.n} kehabisan bahan bakar!`, "danger"); 
+                        addLog(` ${d.n} kehabisan bahan bakar!`, "danger"); 
                     }
 
-                    // 3. Gap Update
                     if(d.status === "Track" && d.fuel > 0) {
                         let change = (Math.random() - 0.5) * 2 * performance;
-                        
-                        // Push Command Boost
                         if(d.isP && playerMode === "push") change += 0.8;
                         if(d.isP && playerMode === "save") change -= 0.3;
                         
@@ -455,7 +419,6 @@
                 }
             });
 
-            // Random Events (Overtakes)
             if(Math.random() > 0.8) {
                 const idx = Math.floor(Math.random() * (drivers.length - 1));
                 const d1 = drivers[idx];
@@ -475,7 +438,7 @@
         }
 
         function startCountdown() {
-            let count = 5;
+            let count = 3;
             const intv = setInterval(() => {
                 document.getElementById('lap-num').innerText = count;
                 count--;
