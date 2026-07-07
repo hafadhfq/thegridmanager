@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garasi - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- DASAR --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #0f0f0f; color: white; font-family: 'Roboto', sans-serif; padding-bottom: 80px; }
+
+        /* --- HEADER --- */
+        .app-header { background: #1a1a1a; padding: 15px 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo { font-family: 'Racing Sans One', cursive; font-size: 20px; color: white; text-decoration: none; }
+        .logo span { color: #ff1801; }
+
+        /* --- TAB NAVIGASI GARASI --- */
+        .garage-tabs { display: flex; background: #1a1a1a; border-bottom: 1px solid #333; }
+        .tab-btn { flex: 1; padding: 15px; text-align: center; background: transparent; border: none; color: #666; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { color: #ff1801; border-bottom: 3px solid #ff1801; }
+
+        /* --- KONTEN SETUP --- */
+        .content-section { padding: 20px; display: none; }
+        .content-section.active { display: block; }
+
+        .stat-row { margin-bottom: 25px; }
+        .stat-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .stat-value { color: #ff1801; font-weight: bold; }
+
+        /* Slider Custom */
+        input[type=range] { width: 100%; -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff1801; cursor: pointer; margin-top: -8px; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px; }
+
+        /* Pilihan Strategi */
+        .strategy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .strat-card { background: #222; border: 1px solid #333; padding: 15px; border-radius: 10px; text-align: center; cursor: pointer; }
+        .strat-card.selected { border-color: #00ff00; background: rgba(0, 255, 0, 0.1); }
+        .strat-icon { font-size: 24px; margin-bottom: 5px; }
+
+        /* FOOTER */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #333; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-item.active { color: #ff1801; }
+        .nav-icon { display: block; font-size: 20px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <a href="dashboard.html" style="font-size: 12px; color: #aaa; text-decoration: none;">🏠 Dashboard</a>
+    </div>
+
+    <!-- Tab Garasi -->
+    <div class="garage-tabs">
+        <button class="tab-btn active" onclick="openTab('setup')">SETUP MOBIL</button>
+        <button class="tab-btn" onclick="openTab('strategy')">STRATEGI RACE</button>
+    </div>
+
+    <!-- Konten 1: Setup Mobil -->
+    <div id="setup" class="content-section active">
+        <div class="stat-row">
+            <div class="stat-label"><span>Aerodinamika (Downforce)</span> <span class="stat-value">Level 5</span></div>
+            <input type="range" min="1" max="10" value="5">
+            <p style="font-size: 11px; color: #666; margin-top: 5px;">Tinggi = Cepat di tikungan, Lambat di lurus.</p>
+        </div>
+
+        <div class="stat-row">
+            <div class="stat-label"><span>Kekakuan Suspensi</span> <span class="stat-value">Level 7</span></div>
+            <input type="range" min="1" max="10" value="7">
+            <p style="font-size: 11px; color: #666; margin-top: 5px;">Kaku = Responsif, Lembut = Grip lebih baik.</p>
+        </div>
+
+        <div class="stat-row">
+            <div class="stat-label"><span>Tekanan Ban (PSI)</span> <span class="stat-value">22.5 PSI</span></div>
+            <input type="range" min="18" max="26" step="0.5" value="22.5">
+            <p style="font-size: 11px; color: #666; margin-top: 5px;">Tekanan tinggi = Top speed, Rendah = Durabilitas.</p>
+        </div>
+    </div>
+
+    <!-- Konten 2: Strategi Race -->
+    <div id="strategy" class="content-section">
+        <h3 style="margin-bottom: 15px; font-family: 'Racing Sans One';">POLA PIT STOP</h3>
+        <div class="strategy-grid">
+            <div class="strat-card selected">
+                <div class="strat-icon">1️⃣</div>
+                <strong>One Stop</strong>
+                <p style="font-size: 10px; color: #888;">Hard - Hard</p>
+            </div>
+            <div class="strat-card">
+                <div class="strat-icon">2️⃣</div>
+                <strong>Two Stop</strong>
+                <p style="font-size: 10px; color: #888;">Med - Soft - Soft</p>
+            </div>
+        </div>
+
+        <h3 style="margin: 25px 0 15px; font-family: 'Racing Sans One';">MODE MESIN</h3>
+        <div class="strategy-grid">
+            <div class="strat-card">
+                <div class="strat-icon">🐢</div>
+                <strong>Eco Mode</strong>
+                <p style="font-size: 10px; color: #888;">Hemat BBM & Mesin</p>
+            </div>
+            <div class="strat-card selected">
+                <div class="strat-icon">🐇</div>
+                <strong>Quali Mode</strong>
+                <p style="font-size: 10px; color: #888;">Performa Maksimal</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
+        <a href="garage.html" class="nav-item active"><span class="nav-icon">🔧</span>Garasi</a>
+        <a href="race-hub.html" class="nav-item"><span class="nav-icon">🚩</span>Race</a>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            // Sembunyikan semua konten
+            const contents = document.querySelectorAll('.content-section');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Matikan semua tombol aktif
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Aktifkan yang dipilih
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
