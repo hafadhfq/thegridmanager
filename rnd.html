@@ -1,1 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R&D Lab - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 90px;
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-family: 'Racing Sans One'; font-size: 20px; color: white; text-decoration: none; }
+        .logo span { color: #ff1801; }
+        .resource-pill {
+            background: rgba(0, 85, 255, 0.1); color: #0055ff;
+            padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;
+            border: 1px solid rgba(0, 85, 255, 0.3);
+        }
+
+        /* --- WIND TUNNEL STATUS --- */
+        .wind-tunnel {
+            margin: 20px;
+            background: linear-gradient(135deg, #1a1a1a, #222);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .wt-title { font-family: 'Racing Sans One'; font-size: 18px; color: #0055ff; margin-bottom: 10px; }
+        .wt-desc { font-size: 12px; color: #888; margin-bottom: 15px; }
+        .wt-bar-bg { height: 8px; background: #333; border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
+        .wt-bar-fill { height: 100%; width: 65%; background: linear-gradient(90deg, #0055ff, #00d2be); }
+
+        /* --- PARTS GRID --- */
+        .parts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .part-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            transition: 0.3s;
+        }
+        .part-card:hover { border-color: #0055ff; }
+
+        .part-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .part-icon { font-size: 24px; }
+        .part-lvl { font-size: 10px; background: #333; padding: 2px 6px; border-radius: 4px; color: #fff; }
+
+        .part-name { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+        .part-stat { font-size: 11px; color: #888; margin-bottom: 12px; }
+
+        .upgrade-btn {
+            width: 100%;
+            padding: 8px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .upgrade-btn:hover { background: #0055ff; border-color: #0055ff; }
+
+        /* Progress Bar di dalam Card */
+        .prog-track { height: 4px; background: #333; border-radius: 2px; margin-top: 10px; }
+        .prog-fill { height: 100%; background: #ffd700; border-radius: 2px; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; border-top: 1px solid #333;
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
+        }
+        .nav-link { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-link.active { color: #0055ff; }
+        .nav-ico { display: block; font-size: 22px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <div class="resource-pill">🔬 450 Research Pts</div>
+    </div>
+
+    <!-- Wind Tunnel Section -->
+    <div class="wind-tunnel">
+        <div class="wt-title">WIND TUNNEL ACTIVE</div>
+        <div class="wt-desc">Fokus saat ini: Aerodinamika Depan (65% Selesai)</div>
+        <div class="wt-bar-bg">
+            <div class="wt-bar-fill"></div>
+        </div>
+        <button style="background: transparent; border: 1px solid #0055ff; color: #0055ff; padding: 5px 15px; border-radius: 20px; font-size: 11px; cursor: pointer;">Ganti Fokus</button>
+    </div>
+
+    <!-- Parts List -->
+    <div class="parts-grid">
+        <!-- Front Wing -->
+        <div class="part-card">
+            <div class="part-header">
+                <span class="part-icon">🦇</span>
+                <span class="part-lvl">LVL 4</span>
+            </div>
+            <div class="part-name">Front Wing</div>
+            <div class="part-stat">+1.2% Downforce</div>
+            <div class="prog-track"><div class="prog-fill" style="width: 65%;"></div></div>
+            <button class="upgrade-btn" style="margin-top: 10px;">Selesaikan Riset</button>
+        </div>
+
+        <!-- Rear Wing -->
+        <div class="part-card">
+            <div class="part-header">
+                <span class="part-icon">✈️</span>
+                <span class="part-lvl">LVL 3</span>
+            </div>
+            <div class="part-name">Rear Wing</div>
+            <div class="part-stat">+2.5 km/h Top Speed</div>
+            <button class="upgrade-btn">Upgrade ($150k)</button>
+        </div>
+
+        <!-- Engine -->
+        <div class="part-card">
+            <div class="part-header">
+                <span class="part-icon">⚙️</span>
+                <span class="part-lvl">LVL 2</span>
+            </div>
+            <div class="part-name">Power Unit</div>
+            <div class="part-stat">Reliabilitas: 88%</div>
+            <button class="upgrade-btn">Upgrade ($300k)</button>
+        </div>
+
+        <!-- Suspension -->
+        <div class="part-card">
+            <div class="part-header">
+                <span class="part-icon">🔩</span>
+                <span class="part-lvl">LVL 5</span>
+            </div>
+            <div class="part-name">Suspensi</div>
+            <div class="part-stat">Handling: Sangat Baik</div>
+            <button class="upgrade-btn" disabled style="opacity: 0.5; cursor: not-allowed;">Max Level</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-link"><span class="nav-ico">🏠</span>Home</a>
+        <a href="race-hub.html" class="nav-link"><span class="nav-ico">🚩</span>Race</a>
+        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
+        <a href="rnd.html" class="nav-link active"><span class="nav-ico">🧬</span>R&D</a>
+    </div>
+
+</body>
+</html>
 
