@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tactical Race Sim</title>
+    <title>Grand Prix Manager</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,9 +12,9 @@
             --border: #333;
             --text-main: #e0e0e0;
             --accent: #ff1801;
-            --success: #00ff00;
-            --warning: #ffaa00;
-            --danger: #ff1801;
+            --pit-color: #00d2be;
+            --push-color: #ff1801;
+            --defend-color: #0055ff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,7 +42,6 @@
         }
         .brand { font-family: 'Racing Sans One'; font-size: 22px; color: white; }
         .brand span { color: var(--accent); }
-        
         .track-info { text-align: right; font-size: 12px; color: #888; }
         .track-info b { color: white; }
 
@@ -87,8 +86,8 @@
             line-height: 1.4;
             animation: slideIn 0.3s ease;
         }
-        .c-item.strat { border-left-color: var(--warning); background: rgba(255, 170, 0, 0.1); }
-        .c-item.danger { border-left-color: var(--danger); color: #ffaaaa; }
+        .c-item.strat { border-left-color: var(--pit-color); background: rgba(0, 210, 190, 0.1); }
+        .c-item.danger { border-left-color: var(--accent); color: #ffaaaa; }
         .c-lap { font-weight: bold; color: #666; font-size: 10px; margin-right: 8px; }
 
         /* RIGHT: TIMING */
@@ -111,13 +110,16 @@
         .t-row.player { background: rgba(255, 215, 0, 0.1); border-left: 3px solid gold; }
         
         .t-pos { width: 30px; font-weight: bold; color: #666; }
-        .t-driver { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-        .d-name { font-weight: 600; color: white; }
-        .d-stats { font-size: 10px; color: #888; display: flex; gap: 8px; }
+        .t-driver { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .d-name { font-weight: 600; color: white; display: flex; align-items: center; gap: 5px; }
+        .team-dot { width: 4px; height: 12px; border-radius: 2px; }
         
-        .bar-container { width: 50px; height: 4px; background: #333; border-radius: 2px; position: relative; top: 3px; }
-        .bar-fill { height: 100%; background: #fff; border-radius: 2px; }
-        .fuel-low { background: var(--danger); }
+        /* Resource Bars */
+        .resources { display: flex; gap: 10px; font-size: 10px; color: #888; }
+        .res-bar { width: 40px; height: 4px; background: #333; border-radius: 2px; position: relative; top: 3px; }
+        .res-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+        .fill-fuel { background: #00d2be; }
+        .fill-tire { background: #ffaa00; }
 
         .t-gap { 
             font-family: monospace; 
@@ -129,7 +131,7 @@
 
         /* --- FOOTER: STRATEGY DASHBOARD --- */
         .strategy-footer {
-            height: 80px;
+            height: 90px;
             background: #1a1a1a;
             border-top: 1px solid var(--border);
             display: flex;
@@ -138,26 +140,42 @@
             gap: 20px;
             flex-shrink: 0;
             z-index: 100;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
         }
 
-        .team-status {
+        .lap-counter {
+            font-family: 'Racing Sans One';
+            font-size: 32px;
+            color: white;
+            border-right: 1px solid #333;
+            padding-right: 20px;
+            margin-right: 10px;
+            min-width: 100px;
+            text-align: center;
+        }
+        .lap-total { font-size: 14px; color: #666; font-family: 'Roboto'; }
+
+        .controls-area {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mode-selector {
             display: flex;
             flex-direction: column;
-            width: 150px;
             gap: 5px;
         }
-        .status-label { font-size: 10px; color: #888; text-transform: uppercase; }
-        .status-val { font-weight: bold; font-size: 14px; }
-        .mode-select {
+        .mode-label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: bold; }
+        select {
             background: #333; color: white; border: 1px solid #555;
-            padding: 2px 5px; border-radius: 4px; font-size: 11px;
+            padding: 5px; border-radius: 4px; font-size: 12px;
         }
 
         .action-buttons {
-            flex: 1;
             display: flex;
             gap: 10px;
-            justify-content: flex-end;
         }
         
         .btn-action {
@@ -172,39 +190,38 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 80px;
-        }
-        .btn-action small { font-size: 9px; opacity: 0.7; font-weight: normal; }
-        
-        .btn-pit { background: #333; color: white; border: 1px solid #555; }
-        .btn-pit:hover { background: #444; }
-        
-        .btn-push { background: var(--accent); color: white; }
-        .btn-push:hover { background: #cc1300; }
-        
-        .btn-defend { background: #0055ff; color: white; }
-        .btn-defend:hover { background: #0044cc; }
-
-        .lap-counter {
-            font-family: 'Racing Sans One';
-            font-size: 30px;
+            min-width: 90px;
             color: white;
-            border-right: 1px solid #333;
-            padding-right: 20px;
-            margin-right: 10px;
         }
+        .btn-action small { font-size: 9px; opacity: 0.8; font-weight: normal; margin-top: 2px; }
+        
+        .btn-pit { background: var(--pit-color); color: black; }
+        .btn-pit:hover { filter: brightness(1.1); }
+        
+        .btn-push { background: var(--push-color); }
+        .btn-push:hover { filter: brightness(1.1); }
+        
+        .btn-defend { background: var(--defend-color); }
+        .btn-defend:hover { filter: brightness(1.1); }
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Mobile */
+        /* Mobile Responsive */
         @media (max-width: 768px) {
             .main-grid { flex-direction: column; }
-            .timing-section { width: 100%; height: 40%; order: -1; }
+            .timing-section { width: 100%; height: 40%; order: -1; border-bottom: 1px solid var(--border); }
             .comm-section { height: 60%; }
-            .strategy-footer { height: auto; flex-direction: column; padding: 10px; gap: 10px; }
+            
+            .strategy-footer { 
+                height: auto; 
+                flex-direction: column; 
+                padding: 15px; 
+                gap: 15px; 
+            }
+            .controls-area { width: 100%; flex-direction: column; gap: 15px; }
             .action-buttons { width: 100%; justify-content: space-between; }
-            .btn-action { flex: 1; }
-            .team-status { width: 100%; flex-direction: row; justify-content: space-between; }
+            .btn-action { flex: 1; padding: 10px 5px; }
+            .lap-counter { width: 100%; border-right: none; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 10px; }
         }
     </style>
 </head>
@@ -238,39 +255,34 @@
 
     <!-- Strategy Footer -->
     <div class="strategy-footer">
-        <div class="lap-counter">LAP <span id="lap-num">0</span>/53</div>
+        <div class="lap-counter">
+            <span id="lap-num">0</span><span class="lap-total">/53</span>
+        </div>
         
-        <div class="team-status">
-            <div>
-                <div class="status-label">Engine Mode</div>
-                <select class="mode-select" id="engine-mode" onchange="updateMode()">
-                    <option value="save">SAVE (Fuel Efficient)</option>
-                    <option value="balanced" selected>BALANCED</option>
-                    <option value="push">PUSH (High Wear)</option>
+        <div class="controls-area">
+            <div class="mode-selector">
+                <div class="mode-label">Engine Mode</div>
+                <select id="engine-mode" onchange="updateMode()">
+                    <option value="save">SAVE (Hemat Bensin/Ban)</option>
+                    <option value="balanced" selected>BALANCED (Normal)</option>
+                    <option value="push">PUSH (Cepat tapi Boros)</option>
                 </select>
             </div>
-            <div>
-                <div class="status-label">Target Driver</div>
-                <div class="status-val" style="color: gold;">YOU (P11)</div>
-            </div>
-        </div>
 
-        <div class="action-buttons">
-            <button class="btn-action btn-pit" onclick="commandPit()">
-                BOX BOX
-                <small>Pit Stop</small>
-            </button>
-            <button class="btn-action btn-push" onclick="commandPush()">
-                ATTACK
-                <small>Overtake</small>
-            </button>
-            <button class="btn-action btn-defend" onclick="commandDefend()">
-                DEFEND
-                <small>Protect Pos</small>
-            </button>
-            <button class="btn-action" style="background:#333; color:white;" onclick="resetSim()">
-                RESET
-            </button>
+            <div class="action-buttons">
+                <button class="btn-action btn-pit" onclick="commandPit()">
+                    BOX BOX
+                    <small>Ganti Ban</small>
+                </button>
+                <button class="btn-action btn-push" onclick="commandPush()">
+                    ATTACK
+                    <small>Overtake</small>
+                </button>
+                <button class="btn-action btn-defend" onclick="commandDefend()">
+                    DEFEND
+                    <small>Jaga Posisi</small>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -286,9 +298,8 @@
         ];
 
         let drivers = [];
-        let playerMode = "balanced"; // save, balanced, push
+        let playerMode = "balanced"; 
         let lap = 0;
-        let running = false;
         let timer;
 
         function initDrivers() {
@@ -329,23 +340,28 @@
                 const team = teams[d.t];
                 const gapText = d.p === 1 ? "LEADER" : `+${d.g.toFixed(1)}s`;
                 
-                // Fuel Bar Color
-                let fuelColor = "#00ff00";
-                if(d.fuel < 30) fuelColor = "#ffaa00";
-                if(d.fuel < 10) fuelColor = "#ff1801";
-
                 const row = document.createElement('div');
                 row.className = `t-row ${d.isP ? 'player' : ''}`;
+                
+                // Only show bars for player to save space, or all if you prefer
+                let bars = "";
+                if(d.isP) {
+                    bars = `
+                        <div class="resources">
+                            <span>⛽</span><div class="res-bar"><div class="res-fill fill-fuel" style="width:${d.fuel}%"></div></div>
+                            <span>🍥</span><div class="res-bar"><div class="res-fill fill-tire" style="width:${d.tire}%"></div></div>
+                        </div>
+                    `;
+                }
+
                 row.innerHTML = `
                     <div class="t-pos">${d.p}</div>
                     <div class="t-driver">
-                        <div class="d-name" style="border-left: 3px solid ${team.c}; padding-left: 5px;">${d.n}</div>
-                        <div class="d-stats">
-                            <span>⛽ ${Math.floor(d.fuel)}%</span>
-                            <div class="bar-container"><div class="bar-fill" style="width:${d.fuel}%; background:${fuelColor}"></div></div>
-                            <span>🍥 ${Math.floor(d.tire)}%</span>
-                            <div class="bar-container"><div class="bar-fill" style="width:${d.tire}%"></div></div>
+                        <div class="d-name">
+                            <div class="team-dot" style="background:${team.c}"></div>
+                            ${d.n}
                         </div>
+                        ${bars}
                     </div>
                     <div class="t-gap"><span>${gapText}</span></div>
                 `;
@@ -371,22 +387,23 @@
             const p = drivers.find(d => d.isP);
             if(p.status === "Track") {
                 p.status = "PIT";
-                p.tire = 100; // New tires
-                p.fuel -= 2; // Fuel for pit lane
+                p.tire = 100; 
+                p.fuel -= 5; 
                 addLog("COMMAND: Box Box! Masuk pit untuk ban baru.", "strat");
                 setTimeout(() => {
                     if(p.status === "PIT") {
                         p.status = "Track";
-                        p.g = 25.0; // Time loss
+                        p.g = 25.0; 
                         addLog("✅ Mobil keluar dari pit lane dengan ban fresh.");
                     }
                 }, 4000);
+            } else {
+                addLog("⚠️ Driver sedang tidak di trek!", "danger");
             }
         }
 
         function commandPush() {
             addLog("COMMAND: Attack! Meningkatkan kecepatan maksimal.", "strat");
-            // Temporary boost logic handled in simulateLap
         }
 
         function commandDefend() {
@@ -410,7 +427,7 @@
                     // Player Strategy Effect
                     if(d.isP) {
                         if(playerMode === "save") { fuelBurn = 0.5; tireWear = 0.5; }
-                        if(playerMode === "push") { fuelBurn = 2.0; tireWear = 2.0; }
+                        if(playerMode === "push") { fuelBurn = 2.5; tireWear = 2.5; }
                     }
 
                     d.fuel -= fuelBurn;
@@ -418,15 +435,19 @@
 
                     // 2. Performance Penalty
                     let performance = 1.0;
-                    if(d.tire < 20) performance = 0.8; // Slow on worn tires
-                    if(d.fuel <= 0) { d.status = "DNF"; addLog(`💥 ${d.n} kehabisan bahan bakar!`, "danger"); }
+                    if(d.tire < 20) performance = 0.7; // Slow on worn tires
+                    if(d.fuel <= 0) { 
+                        d.status = "DNF"; 
+                        addLog(`💥 ${d.n} kehabisan bahan bakar!`, "danger"); 
+                    }
 
                     // 3. Gap Update
                     if(d.status === "Track" && d.fuel > 0) {
                         let change = (Math.random() - 0.5) * 2 * performance;
                         
                         // Push Command Boost
-                        if(d.isP && playerMode === "push") change += 0.5;
+                        if(d.isP && playerMode === "push") change += 0.8;
+                        if(d.isP && playerMode === "save") change -= 0.3;
                         
                         d.g += change;
                         if(d.g < 0.5 && d.p !== 1) d.g = 0.5;
@@ -434,8 +455,8 @@
                 }
             });
 
-            // Random Events
-            if(Math.random() > 0.9) {
+            // Random Events (Overtakes)
+            if(Math.random() > 0.8) {
                 const idx = Math.floor(Math.random() * (drivers.length - 1));
                 const d1 = drivers[idx];
                 const d2 = drivers[idx+1];
@@ -448,22 +469,6 @@
             renderTiming();
         }
 
-        function toggleSim() {
-            const btn = document.querySelector('.btn-action[onclick="toggleSim()"]'); // Just for reference
-            // Logic handled by auto-start below
-        }
-
-        function resetSim() {
-            clearInterval(timer);
-            running = false;
-            lap = 0;
-            document.getElementById('lap-num').innerText = "0";
-            document.getElementById('feed').innerHTML = '<div class="c-item">Mobil berada di grid. Strategi awal: Start Medium.</div>';
-            initDrivers();
-            renderTiming();
-            startCountdown();
-        }
-
         function finishRace() {
             clearInterval(timer);
             addLog("🏁 CHECKERED FLAG! Balapan Selesai.", "strat");
@@ -471,15 +476,12 @@
 
         function startCountdown() {
             let count = 5;
-            const btn = document.querySelector('.btn-action[style*="background:#333"]'); // Reset button
-            // Using a simple interval for demo
             const intv = setInterval(() => {
                 document.getElementById('lap-num').innerText = count;
                 count--;
                 if(count < 0) {
                     clearInterval(intv);
                     document.getElementById('lap-num').innerText = "0";
-                    running = true;
                     timer = setInterval(simulateLap, 1000);
                     addLog("🚩 LIGHTS OUT! BALAPAN DIMULAI!", "danger");
                 }
