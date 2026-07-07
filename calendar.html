@@ -26,5 +26,178 @@
             position: sticky; top: 0; z-index: 100;
         }
         .logo { font-family: 'Racing Sans One'; font-size: 20px; color: white; text-decoration: none; }
-        .
+        .logo span { color: #ff1801; }
+        .season-badge { 
+            background: #333; padding: 4px 10px; border-radius: 6px; 
+            font-size: 12px; font-weight: bold; color: #fff;
+        }
 
+        /* --- SEASON PROGRESS --- */
+        .progress-widget {
+            margin: 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        .pw-text { font-size: 12px; color: #888; margin-bottom: 8px; }
+        .pw-bar-bg { height: 8px; background: #333; border-radius: 4px; overflow: hidden; }
+        .pw-bar-fill { height: 100%; width: 35%; background: linear-gradient(90deg, #ff1801, #ff5500); }
+
+        /* --- CIRCUIT LIST --- */
+        .circuit-list { padding: 0 20px; }
+
+        .race-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .race-card:hover { border-color: #555; }
+
+        /* Status: Next Race */
+        .race-card.next-race { border: 1px solid #ff1801; box-shadow: 0 0 15px rgba(255, 24, 1, 0.2); }
+        
+        .rc-header {
+            padding: 12px 15px;
+            background: #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .round-num { font-family: 'Racing Sans One'; font-size: 14px; color: #666; }
+        .race-date { font-size: 12px; color: #aaa; }
+
+        .rc-body { padding: 15px; display: flex; gap: 15px; align-items: center; }
+        
+        .flag-lg { font-size: 32px; }
+        
+        .race-info h3 { font-size: 16px; color: white; margin-bottom: 4px; }
+        .circuit-name { font-size: 12px; color: #888; }
+
+        .race-status {
+            margin-left: auto;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-done { background: rgba(0, 255, 0, 0.1); color: #00ff00; }
+        .status-next { background: #ff1801; color: white; animation: pulse 2s infinite; }
+        .status-upcoming { background: #333; color: #888; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; border-top: 1px solid #333;
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
+        }
+        .nav-link { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-link.active { color: #ff1801; }
+        .nav-ico { display: block; font-size: 22px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <div class="season-badge">SEASON 2026</div>
+    </div>
+
+    <!-- Season Progress -->
+    <div class="progress-widget">
+        <div class="pw-text">Progres Musim: 7 / 24 Balapan</div>
+        <div class="pw-bar-bg"><div class="pw-bar-fill"></div></div>
+    </div>
+
+    <!-- Circuit List -->
+    <div class="circuit-list">
+        
+        <!-- Completed Race -->
+        <div class="race-card">
+            <div class="rc-header">
+                <span class="round-num">RD 06</span>
+                <span class="race-date">25 Mei 2026</span>
+            </div>
+            <div class="rc-body">
+                <span class="flag-lg">🇲🇨</span>
+                <div class="race-info">
+                    <h3>Monaco GP</h3>
+                    <div class="circuit-name">Circuit de Monaco</div>
+                </div>
+                <div class="race-status status-done">Selesai</div>
+            </div>
+        </div>
+
+        <!-- NEXT RACE (Highlight) -->
+        <div class="race-card next-race" onclick="window.location.href='race-hub.html'">
+            <div class="rc-header" style="background: rgba(255, 24, 1, 0.1);">
+                <span class="round-num" style="color:#ff1801">RD 07</span>
+                <span class="race-date" style="color:white">08 Juni 2026</span>
+            </div>
+            <div class="rc-body">
+                <span class="flag-lg">🇨🇦</span>
+                <div class="race-info">
+                    <h3>Canadian GP</h3>
+                    <div class="circuit-name">Circuit Gilles Villeneuve</div>
+                </div>
+                <div class="race-status status-next">NEXT RACE</div>
+            </div>
+        </div>
+
+        <!-- Upcoming Races -->
+        <div class="race-card">
+            <div class="rc-header">
+                <span class="round-num">RD 08</span>
+                <span class="race-date">22 Juni 2026</span>
+            </div>
+            <div class="rc-body">
+                <span class="flag-lg">🇪🇸</span>
+                <div class="race-info">
+                    <h3>Spanish GP</h3>
+                    <div class="circuit-name">Circuit de Barcelona-Catalunya</div>
+                </div>
+                <div class="race-status status-upcoming">Akan Datang</div>
+            </div>
+        </div>
+
+        <div class="race-card">
+            <div class="rc-header">
+                <span class="round-num">RD 09</span>
+                <span class="race-date">06 Juli 2026</span>
+            </div>
+            <div class="rc-body">
+                <span class="flag-lg">🇦🇹</span>
+                <div class="race-info">
+                    <h3>Austrian GP</h3>
+                    <div class="circuit-name">Red Bull Ring</div>
+                </div>
+                <div class="race-status status-upcoming">Akan Datang</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-link"><span class="nav-ico">🏠</span>Home</a>
+        <a href="race-hub.html" class="nav-link"><span class="nav-ico">🚩</span>Race</a>
+        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
+        <a href="calendar.html" class="nav-link active"><span class="nav-ico">📅</span>Kalender</a>
+    </div>
+
+</body>
+</html>
