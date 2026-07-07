@@ -1,1 +1,275 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klasemen - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 90px;
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-family: 'Racing Sans One'; font-size: 20px; color: white; text-decoration: none; }
+        .logo span { color: #ff1801; }
+
+        /* --- TAB NAVIGASI --- */
+        .standing-tabs {
+            display: flex;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            position: sticky; top: 56px; z-index: 99;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: #666;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .tab-btn.active {
+            color: #ff1801;
+            border-bottom: 3px solid #ff1801;
+            background: rgba(255, 24, 1, 0.05);
+        }
+
+        /* --- TABEL KLASMEN --- */
+        .table-container { padding: 20px; display: none; }
+        .table-container.active { display: block; }
+
+        .standings-table { width: 100%; border-collapse: collapse; }
+        
+        .standings-table th {
+            text-align: left;
+            color: #666;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 10px 5px;
+            border-bottom: 1px solid #333;
+        }
+
+        .standings-table td {
+            padding: 12px 5px;
+            border-bottom: 1px solid #222;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        /* Kolom Posisi */
+        .pos-col { 
+            width: 30px; 
+            font-weight: bold; 
+            color: #888; 
+            text-align: center;
+        }
+        .pos-1 { color: #ffd700; } /* Emas */
+        .pos-2 { color: #c0c0c0; } /* Perak */
+        .pos-3 { color: #cd7f32; } /* Perunggu */
+
+        /* Kolom Driver/Tim */
+        .name-col { font-weight: bold; color: white; }
+        .team-label { font-size: 11px; color: #888; display: block; margin-top: 2px; }
+        
+        /* Indikator Warna Tim */
+        .team-indicator {
+            width: 4px;
+            height: 25px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        /* Kolom Poin */
+        .pts-col { text-align: right; font-weight: bold; color: #00ff00; }
+
+        /* Highlight Pemain */
+        .player-row { background: rgba(255, 24, 1, 0.1); border-left: 3px solid #ff1801; }
+
+        /* Bendera Negara (Simulasi) */
+        .flag { font-size: 16px; margin-right: 5px; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; border-top: 1px solid #333;
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
+        }
+        .nav-link { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-link.active { color: #ff1801; }
+        .nav-ico { display: block; font-size: 22px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <a href="dashboard.html" style="font-size: 12px; color: #aaa; text-decoration: none;">🏠 Dashboard</a>
+    </div>
+
+    <!-- Tab Navigasi -->
+    <div class="standing-tabs">
+        <button class="tab-btn active" onclick="switchTab('drivers')">DRIVER STANDINGS</button>
+        <button class="tab-btn" onclick="switchTab('teams')">TEAM STANDINGS</button>
+    </div>
+
+    <!-- Konten: Driver Standings -->
+    <div id="drivers" class="table-container active">
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>DRIVER</th>
+                    <th style="text-align:right">PTS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- P1 -->
+                <tr>
+                    <td class="pos-col pos-1">1</td>
+                    <td>
+                        <span class="flag">🇳🇱</span>
+                        <div class="name-col">M. Verstappen</div>
+                        <span class="team-label"><span class="team-indicator" style="background:#0055ff"></span>Red Bull Racing</span>
+                    </td>
+                    <td class="pts-col">210</td>
+                </tr>
+                <!-- P2 -->
+                <tr>
+                    <td class="pos-col pos-2">2</td>
+                    <td>
+                        <span class="flag">🇬🇧</span>
+                        <div class="name-col">L. Hamilton</div>
+                        <span class="team-label"><span class="team-indicator" style="background:#00d2be"></span>Mercedes AMG</span>
+                    </td>
+                    <td class="pts-col">185</td>
+                </tr>
+                <!-- P3 -->
+                <tr>
+                    <td class="pos-col pos-3">3</td>
+                    <td>
+                        <span class="flag">🇲🇨</span>
+                        <div class="name-col">C. Leclerc</div>
+                        <span class="team-label"><span class="team-indicator" style="background:#ff1801"></span>Ferrari</span>
+                    </td>
+                    <td class="pts-col">172</td>
+                </tr>
+                <!-- P4 -->
+                <tr>
+                    <td class="pos-col">4</td>
+                    <td>
+                        <span class="flag">🇪🇸</span>
+                        <div class="name-col">F. Alonso</div>
+                        <span class="team-label"><span class="team-indicator" style="background:#006f62"></span>Aston Martin</span>
+                    </td>
+                    <td class="pts-col">120</td>
+                </tr>
+                <!-- Player Row -->
+                <tr class="player-row">
+                    <td class="pos-col">7</td>
+                    <td>
+                        <span class="flag">🇮🇩</span>
+                        <div class="name-col">YOU (Player)</div>
+                        <span class="team-label"><span class="team-indicator" style="background:#ff1801"></span>Scuderia Grid</span>
+                    </td>
+                    <td class="pts-col">85</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Konten: Team Standings -->
+    <div id="teams" class="table-container">
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>TEAM</th>
+                    <th style="text-align:right">PTS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="pos-col pos-1">1</td>
+                    <td>
+                        <span class="team-indicator" style="background:#0055ff"></span>
+                        <div class="name-col">Red Bull Racing</div>
+                    </td>
+                    <td class="pts-col">350</td>
+                </tr>
+                <tr>
+                    <td class="pos-col pos-2">2</td>
+                    <td>
+                        <span class="team-indicator" style="background:#ff1801"></span>
+                        <div class="name-col">Ferrari</div>
+                    </td>
+                    <td class="pts-col">290</td>
+                </tr>
+                <tr>
+                    <td class="pos-col pos-3">3</td>
+                    <td>
+                        <span class="team-indicator" style="background:#00d2be"></span>
+                        <div class="name-col">Mercedes AMG</div>
+                    </td>
+                    <td class="pts-col">265</td>
+                </tr>
+                <!-- Player Team Row -->
+                <tr class="player-row">
+                    <td class="pos-col">4</td>
+                    <td>
+                        <span class="team-indicator" style="background:#ff1801"></span>
+                        <div class="name-col">Scuderia Grid</div>
+                    </td>
+                    <td class="pts-col">110</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-link"><span class="nav-ico">🏠</span>Home</a>
+        <a href="race-hub.html" class="nav-link"><span class="nav-ico">🚩</span>Race</a>
+        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
+        <a href="standing.html" class="nav-link active"><span class="nav-ico">🏆</span>Klasmen</a>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Sembunyikan semua konten
+            document.getElementById('drivers').classList.remove('active');
+            document.getElementById('teams').classList.remove('active');
+            
+            // Matikan semua tombol
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Aktifkan yang dipilih
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
