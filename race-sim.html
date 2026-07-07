@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Start Race Sim</title>
+    <title>Race Sim Fixed Layout</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -21,13 +21,13 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             font-family: 'Roboto', sans-serif;
-            height: 100vh;
+            height: 100vh; /* Kunci: Tinggi body harus 100% layar */
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* Kunci: Mencegah scroll pada seluruh halaman */
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER (Fixed Height) --- */
         .header {
             background: var(--bg-panel);
             padding: 10px 15px;
@@ -35,39 +35,31 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 10;
-            height: 60px;
+            height: 50px; /* Tinggi tetap */
+            flex-shrink: 0; /* Jangan mengecil */
         }
         .race-title { font-family: 'Racing Sans One'; font-size: 18px; }
-        
         .status-box { text-align: right; }
-        .lap-counter { font-weight: bold; font-size: 16px; display: block; }
-        .cd-timer { 
-            font-family: 'Racing Sans One'; 
-            font-size: 20px; 
-            color: #fff; 
-            display: none; /* Hidden by default */
-        }
-        .cd-timer.active { display: block; animation: pulse 1s infinite; }
+        .lap-counter { font-weight: bold; font-size: 14px; }
+        .cd-timer { font-family: 'Racing Sans One'; font-size: 16px; color: #fff; }
 
-        /* --- MAIN LAYOUT --- */
+        /* --- MAIN CONTENT (Fills Remaining Space) --- */
         .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            flex: 1;
-            overflow: hidden;
-        }
-        @media (max-width: 768px) {
-            .main-grid { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+            display: flex; /* Menggunakan Flex agar lebih mudah diatur */
+            flex: 1; /* Mengisi sisa ruang antara header dan footer */
+            overflow: hidden; /* Mencegah konten melebar keluar */
         }
 
-        /* --- LEFT: COMMENTARY --- */
+        /* --- LEFT: COMMENTARY (Scrollable Area) --- */
         .comm-section {
-            border-right: 1px solid var(--border);
+            flex: 1; /* Mengambil sisa lebar */
             display: flex;
             flex-direction: column;
             background: #121212;
+            border-right: 1px solid var(--border);
+            min-width: 0; /* Mencegah overflow flex item */
         }
+        
         .panel-head {
             padding: 8px 15px;
             background: #222;
@@ -76,14 +68,17 @@
             text-transform: uppercase;
             color: var(--text-dim);
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
+
         .comm-feed {
-            flex: 1;
-            overflow-y: auto;
+            flex: 1; /* Kunci: Mengisi tinggi yang tersedia */
+            overflow-y: auto; /* Kunci: Scroll muncul jika konten panjang */
             padding: 10px;
             display: flex;
             flex-direction: column-reverse;
         }
+
         .c-item {
             font-size: 13px;
             margin-bottom: 8px;
@@ -94,12 +89,20 @@
         }
         .c-lap { color: var(--accent); font-weight: bold; font-size: 11px; margin-right: 5px; }
 
-        /* --- RIGHT: TIMING --- */
+        /* --- RIGHT: TIMING (Fixed Width) --- */
         .timing-section {
+            width: 280px; /* Lebar tetap untuk klasemen */
             background: var(--bg-panel);
-            overflow-y: auto;
-            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
         }
+        
+        .timing-list-container {
+            flex: 1;
+            overflow-y: auto;
+        }
+
         .t-row {
             display: flex;
             align-items: center;
@@ -124,18 +127,17 @@
         }
         .gap-val { color: #fff; }
 
-        /* --- CONTROLS --- */
+        /* --- FOOTER CONTROLS (Fixed Bottom) --- */
         .controls-bar {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
             height: 60px;
-            background: #1a1a1a;
-            border-top: 1px solid #333;
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border);
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 15px;
-            z-index: 999;
+            flex-shrink: 0;
+            z-index: 100;
         }
         .btn {
             padding: 10px 30px;
@@ -149,8 +151,14 @@
         .btn-go { background: var(--accent); color: white; }
         .btn-stop { background: #333; color: white; }
 
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .main-grid { flex-direction: column; }
+            .timing-section { width: 100%; height: 40%; border-top: 1px solid var(--border); order: -1; } /* Klasemen di atas di HP */
+            .comm-section { height: 60%; }
+        }
     </style>
 </head>
 <body>
@@ -159,22 +167,28 @@
     <div class="header">
         <div class="race-title">🇨🇦 CANADIAN GP</div>
         <div class="status-box">
+            <div class="cd-timer" id="cd-display">START IN 10s</div>
             <div class="lap-counter">LAP <span id="lap-num">0</span>/70</div>
-            <div class="cd-timer active" id="cd-display">START IN 10s</div>
         </div>
     </div>
 
     <!-- Main Grid -->
     <div class="main-grid">
+        
+        <!-- Left: Commentary -->
         <div class="comm-section">
             <div class="panel-head">Live Commentary</div>
             <div class="comm-feed" id="feed">
-                <div class="c-item">Persiapan formasi grid...</div>
+                <div class="c-item">Menunggu lampu start...</div>
             </div>
         </div>
+
+        <!-- Right: Timing -->
         <div class="timing-section">
             <div class="panel-head">Live Classification</div>
-            <div id="timing-list"></div>
+            <div class="timing-list-container" id="timing-list">
+                <!-- JS will populate this -->
+            </div>
         </div>
     </div>
 
@@ -216,7 +230,6 @@
         let countDown = 10;
         let cdInterval;
 
-        // --- RENDER FUNCTIONS ---
         function renderTiming() {
             const list = document.getElementById('timing-list');
             list.innerHTML = '';
@@ -248,7 +261,6 @@
             feed.prepend(div);
         }
 
-        // --- SIMULATION LOGIC ---
         function simulateLap() {
             if(lap >= 70) { finishRace(); return; }
             lap++;
@@ -292,7 +304,6 @@
             }
         }
 
-        // --- AUTO START COUNTDOWN ---
         function startCountdown() {
             const display = document.getElementById('cd-display');
             const btn = document.getElementById('start-btn');
@@ -301,16 +312,12 @@
                 countDown--;
                 display.innerText = `START IN ${countDown}s`;
                 
-                if(countDown <= 3) {
-                    display.style.color = "#ff1801"; // Red warning
-                }
-
                 if(countDown <= 0) {
                     clearInterval(cdInterval);
                     display.style.display = "none";
                     btn.innerText = "PAUSE";
                     btn.disabled = false;
-                    toggleSim(); // Auto start the race
+                    toggleSim();
                 }
             }, 1000);
         }
@@ -325,19 +332,16 @@
             document.getElementById('lap-num').innerText = "0";
             document.getElementById('cd-display').style.display = "block";
             document.getElementById('cd-display').innerText = "START IN 10s";
-            document.getElementById('cd-display').style.color = "#fff";
             
             const btn = document.getElementById('start-btn');
             btn.innerText = "WAITING...";
             btn.disabled = true;
             btn.style.background = "";
 
-            document.getElementById('feed').innerHTML = '<div class="c-item">Persiapan formasi grid...</div>';
+            document.getElementById('feed').innerHTML = '<div class="c-item">Menunggu lampu start...</div>';
             
             drivers.forEach((d, i) => { d.p = i + 1; d.g = i * 2.5; });
             renderTiming();
-            
-            // Restart countdown
             startCountdown();
         }
 
@@ -350,7 +354,7 @@
 
         // Init
         renderTiming();
-        startCountdown(); // Start the 10s timer immediately
+        startCountdown();
     </script>
 </body>
 </html>
