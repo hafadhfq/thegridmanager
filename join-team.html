@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cari Tim - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET & DASAR --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: #0f0f0f; 
+            color: white; 
+            font-family: 'Roboto', sans-serif; 
+            padding-bottom: 80px; /* Ruang untuk footer */
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Racing Sans One', cursive;
+            font-size: 20px;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo span { color: #ff1801; }
+
+        .header-link {
+            font-size: 12px;
+            color: #aaa;
+            text-decoration: none;
+            border: 1px solid #333;
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .header-link:hover { border-color: #ff1801; color: #ff1801; }
+
+        /* --- KONTEN UTAMA --- */
+        .content { padding: 20px; }
+        
+        h1 { font-family: 'Racing Sans One', cursive; color: #ff1801; margin-bottom: 5px; }
+        .sub-header { color: #888; font-size: 14px; margin-bottom: 30px; }
+
+        /* --- KARTU TIM --- */
+        .team-list { display: flex; flex-direction: column; gap: 15px; }
+
+        .team-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+
+        .team-card:hover { border-color: #ff1801; transform: translateX(5px); }
+
+        .card-left { display: flex; align-items: center; gap: 15px; }
+
+        .livery-dots { display: flex; gap: 4px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); }
+
+        .team-details h3 { margin: 0; font-size: 16px; font-weight: bold; }
+        .team-details p { margin: 4px 0 0; font-size: 12px; color: #aaa; }
+        
+        .slot-badge {
+            background: #333; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #00ff00; margin-left: 5px;
+        }
+
+        .btn-request {
+            background: transparent; border: 1px solid #ff1801; color: #ff1801;
+            padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-request:hover { background: #ff1801; color: white; }
+        .btn-full { border-color: #555; color: #555; cursor: not-allowed; }
+
+        /* --- BOTTOM NAVIGATION (FOOTER) --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; border-top: 1px solid #333;
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
+        }
+
+        .nav-item { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-item.active { color: #ff1801; }
+        .nav-icon { display: block; font-size: 20px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <a href="dashboard.html" class="header-link">🏠 Dashboard</a>
+    </div>
+
+    <!-- KONTEN -->
+    <div class="content">
+        <h1>DAFTAR TIM GLOBAL</h1>
+        <div class="sub-header">Temukan tim yang sesuai dengan gaya balapmu.</div>
+
+        <div class="team-list">
+            <!-- Demo Tim 1 -->
+            <div class="team-card">
+                <div class="card-left">
+                    <div class="livery-dots">
+                        <div class="dot" style="background: #0055ff;"></div>
+                        <div class="dot" style="background: #ffffff;"></div>
+                    </div>
+                    <div class="team-details">
+                        <h3>Mercedes AMG <span class="slot-badge">1/2 SLOT</span></h3>
+                        <p>Owner: TotoW | Budget: $45M</p>
+                    </div>
+                </div>
+                <button class="btn-request">MINTA JOIN</button>
+            </div>
+
+            <!-- Demo Tim 2 -->
+            <div class="team-card">
+                <div class="card-left">
+                    <div class="livery-dots">
+                        <div class="dot" style="background: #ff0000;"></div>
+                        <div class="dot" style="background: #ffd700;"></div>
+                    </div>
+                    <div class="team-details">
+                        <h3>Scuderia Ferrari <span class="slot-badge">1/2 SLOT</span></h3>
+                        <p>Owner: MattiaB | Budget: $30M</p>
+                    </div>
+                </div>
+                <button class="btn-request">MINTA JOIN</button>
+            </div>
+
+             <!-- Demo Tim 3 (Penuh) -->
+             <div class="team-card">
+                <div class="card-left">
+                    <div class="livery-dots">
+                        <div class="dot" style="background: #ff8800;"></div>
+                        <div class="dot" style="background: #000000;"></div>
+                    </div>
+                    <div class="team-details">
+                        <h3>McLaren Racing <span class="slot-badge" style="color:#ff1801">FULL</span></h3>
+                        <p>Owner: ZakB | Partner: LandoN</p>
+                    </div>
+                </div>
+                <button class="btn-request btn-full">PENUH</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER / BOTTOM NAV -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
+        <a href="join-team.html" class="nav-item active"><span class="nav-icon">🤝</span>Tim</a>
+        <a href="profile.html" class="nav-item"><span class="nav-icon">⚙️</span>Profil</a>
+    </div>
+
+</body>
+</html>
+
