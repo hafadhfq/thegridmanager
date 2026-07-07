@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Race Sim Compact</title>
+    <title>Auto Start Race Sim</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -24,7 +24,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Mencegah scroll pada body utama */
+            overflow: hidden;
         }
 
         /* --- HEADER --- */
@@ -36,26 +36,29 @@
             justify-content: space-between;
             align-items: center;
             z-index: 10;
-            height: 50px;
+            height: 60px;
         }
         .race-title { font-family: 'Racing Sans One'; font-size: 18px; }
-        .lap-counter { font-weight: bold; font-size: 16px; }
-        .lap-counter span { color: var(--accent); }
+        
+        .status-box { text-align: right; }
+        .lap-counter { font-weight: bold; font-size: 16px; display: block; }
+        .cd-timer { 
+            font-family: 'Racing Sans One'; 
+            font-size: 20px; 
+            color: #fff; 
+            display: none; /* Hidden by default */
+        }
+        .cd-timer.active { display: block; animation: pulse 1s infinite; }
 
         /* --- MAIN LAYOUT --- */
         .main-grid {
             display: grid;
-            grid-template-columns: 1fr 300px; /* Kiri komentar, Kanan klasemen */
+            grid-template-columns: 1fr 300px;
             flex: 1;
             overflow: hidden;
         }
-
-        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .main-grid { 
-                grid-template-columns: 1fr; 
-                grid-template-rows: 1fr 1fr; 
-            }
+            .main-grid { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
         }
 
         /* --- LEFT: COMMENTARY --- */
@@ -76,10 +79,10 @@
         }
         .comm-feed {
             flex: 1;
-            overflow-y: auto; /* Scrollable */
+            overflow-y: auto;
             padding: 10px;
             display: flex;
-            flex-direction: column-reverse; /* Item baru di bawah */
+            flex-direction: column-reverse;
         }
         .c-item {
             font-size: 13px;
@@ -121,12 +124,10 @@
         }
         .gap-val { color: #fff; }
 
-        /* --- TOMBOL START (FIXED BOTTOM) --- */
+        /* --- CONTROLS --- */
         .controls-bar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
+            bottom: 0; left: 0; width: 100%;
             height: 60px;
             background: #1a1a1a;
             border-top: 1px solid #333;
@@ -134,10 +135,8 @@
             justify-content: center;
             align-items: center;
             gap: 15px;
-            z-index: 999; /* Pastikan di atas segalanya */
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+            z-index: 999;
         }
-
         .btn {
             padding: 10px 30px;
             border-radius: 50px;
@@ -146,14 +145,11 @@
             cursor: pointer;
             font-size: 14px;
             text-transform: uppercase;
-            transition: transform 0.1s;
         }
-        .btn:active { transform: scale(0.95); }
-        
-        .btn-go { background: var(--accent); color: white; box-shadow: 0 0 10px rgba(255, 24, 1, 0.4); }
+        .btn-go { background: var(--accent); color: white; }
         .btn-stop { background: #333; color: white; }
-        .btn-reset { background: transparent; border: 1px solid #555; color: #aaa; padding: 10px 15px; }
 
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
@@ -162,33 +158,30 @@
     <!-- Header -->
     <div class="header">
         <div class="race-title">🇨🇦 CANADIAN GP</div>
-        <div class="lap-counter">LAP <span id="lap-num">0</span>/70</div>
+        <div class="status-box">
+            <div class="lap-counter">LAP <span id="lap-num">0</span>/70</div>
+            <div class="cd-timer active" id="cd-display">START IN 10s</div>
+        </div>
     </div>
 
     <!-- Main Grid -->
     <div class="main-grid">
-        
-        <!-- Left: Commentary -->
         <div class="comm-section">
             <div class="panel-head">Live Commentary</div>
             <div class="comm-feed" id="feed">
-                <div class="c-item">Menunggu lampu start...</div>
+                <div class="c-item">Persiapan formasi grid...</div>
             </div>
         </div>
-
-        <!-- Right: Timing -->
         <div class="timing-section">
             <div class="panel-head">Live Classification</div>
-            <div id="timing-list">
-                <!-- JS will populate this -->
-            </div>
+            <div id="timing-list"></div>
         </div>
     </div>
 
-    <!-- Controls (Fixed Bottom) -->
+    <!-- Controls -->
     <div class="controls-bar">
-        <button class="btn btn-reset" onclick="resetSim()">Reset</button>
-        <button class="btn btn-go" id="start-btn" onclick="toggleSim()">START RACE</button>
+        <button class="btn btn-stop" onclick="resetSim()">Reset</button>
+        <button class="btn btn-go" id="start-btn" onclick="toggleSim()" disabled>WAITING...</button>
     </div>
 
     <script>
@@ -199,7 +192,7 @@
             { n: "Aston Martin", c: "#006F62" }, { n: "Alpine", c: "#0090FF" },
             { n: "Williams", c: "#005AFF" }, { n: "RB", c: "#1634CB" },
             { n: "Sauber", c: "#000000" }, { n: "Haas", c: "#B6BABD" },
-            { n: "Grid FC", c: "#FFD700" } // Player Team
+            { n: "Grid FC", c: "#FFD700" }
         ];
 
         let drivers = [
@@ -208,7 +201,6 @@
             { n: "Leclerc", t: 2, p: 5, g: 8.5 }, { n: "Sainz", t: 2, p: 6, g: 9.1 },
             { n: "Norris", t: 3, p: 7, g: 12.3 }, { n: "Piastri", t: 3, p: 8, g: 13.0 },
             { n: "Alonso", t: 4, p: 9, g: 15.5 }, { n: "Stroll", t: 4, p: 10, g: 18.2 },
-            // PLAYER START P11
             { n: "YOU (Player)", t: 10, p: 11, g: 19.5, isP: true }, 
             { n: "Gasly", t: 5, p: 12, g: 20.1 }, { n: "Ocon", t: 5, p: 13, g: 21.5 },
             { n: "Albon", t: 6, p: 14, g: 25.0 }, { n: "Teammate", t: 10, p: 15, g: 26.4 },
@@ -221,12 +213,13 @@
         let lap = 0;
         let running = false;
         let timer;
+        let countDown = 10;
+        let cdInterval;
 
+        // --- RENDER FUNCTIONS ---
         function renderTiming() {
             const list = document.getElementById('timing-list');
             list.innerHTML = '';
-            
-            // Sort by position
             drivers.sort((a,b) => a.p - b.p);
 
             drivers.forEach(d => {
@@ -255,18 +248,17 @@
             feed.prepend(div);
         }
 
+        // --- SIMULATION LOGIC ---
         function simulateLap() {
             if(lap >= 70) { finishRace(); return; }
             lap++;
             document.getElementById('lap-num').innerText = lap;
 
-            // Update Gaps
             drivers.forEach(d => {
                 if(Math.random() > 0.5) d.g += (Math.random() - 0.5) * 1.5;
                 if(d.g < 0.5 && d.p !== 1) d.g = 0.5;
             });
 
-            // Random Overtake
             const idx = Math.floor(Math.random() * (drivers.length - 1));
             const d1 = drivers[idx];
             const d2 = drivers[idx+1];
@@ -276,10 +268,8 @@
                 addLog(`<b>${d2.n}</b> menyalip ${d1.n} untuk posisi P${d2.p}!`);
             }
 
-            // Player Event
             if(Math.random() > 0.8) {
-                const msgs = ["You set fastest lap!", "Engine mode: Push.", "Traffic ahead."];
-                addLog(msgs[Math.floor(Math.random()*msgs.length)]);
+                addLog("You set fastest lap!");
             }
 
             renderTiming();
@@ -291,7 +281,7 @@
                 clearInterval(timer);
                 running = false;
                 btn.innerText = "RESUME";
-                btn.className = "btn btn-go"; // Keep it green/red consistent
+                btn.disabled = false;
                 btn.style.background = "#333";
             } else {
                 if(lap === 0) addLog("LIGHTS OUT! BALAPAN DIMULAI!");
@@ -302,18 +292,53 @@
             }
         }
 
+        // --- AUTO START COUNTDOWN ---
+        function startCountdown() {
+            const display = document.getElementById('cd-display');
+            const btn = document.getElementById('start-btn');
+            
+            cdInterval = setInterval(() => {
+                countDown--;
+                display.innerText = `START IN ${countDown}s`;
+                
+                if(countDown <= 3) {
+                    display.style.color = "#ff1801"; // Red warning
+                }
+
+                if(countDown <= 0) {
+                    clearInterval(cdInterval);
+                    display.style.display = "none";
+                    btn.innerText = "PAUSE";
+                    btn.disabled = false;
+                    toggleSim(); // Auto start the race
+                }
+            }, 1000);
+        }
+
         function resetSim() {
             clearInterval(timer);
+            clearInterval(cdInterval);
             running = false;
             lap = 0;
-            document.getElementById('lap-num').innerText = "0";
-            document.getElementById('start-btn').innerText = "START RACE";
-            document.getElementById('start-btn').style.background = ""; // Reset to CSS default
-            document.getElementById('feed').innerHTML = '<div class="c-item">Menunggu lampu start...</div>';
+            countDown = 10;
             
-            // Reset positions
+            document.getElementById('lap-num').innerText = "0";
+            document.getElementById('cd-display').style.display = "block";
+            document.getElementById('cd-display').innerText = "START IN 10s";
+            document.getElementById('cd-display').style.color = "#fff";
+            
+            const btn = document.getElementById('start-btn');
+            btn.innerText = "WAITING...";
+            btn.disabled = true;
+            btn.style.background = "";
+
+            document.getElementById('feed').innerHTML = '<div class="c-item">Persiapan formasi grid...</div>';
+            
             drivers.forEach((d, i) => { d.p = i + 1; d.g = i * 2.5; });
             renderTiming();
+            
+            // Restart countdown
+            startCountdown();
         }
 
         function finishRace() {
@@ -321,11 +346,11 @@
             running = false;
             addLog("🏁 GARIS FINIS! BALAPAN SELESAI.");
             document.getElementById('start-btn').innerText = "FINISHED";
-            document.getElementById('start-btn').disabled = true;
         }
 
         // Init
         renderTiming();
+        startCountdown(); // Start the 10s timer immediately
     </script>
 </body>
 </html>
