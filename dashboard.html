@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Command Center - Grid Manager</title>
+    <title>Ultimate Dashboard - Grid Manager</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,54 +33,60 @@
             border: 1px solid rgba(0, 255, 0, 0.3);
         }
 
-        /* --- HERO SECTION --- */
-        .hero-section {
+        /* --- HERO INFO --- */
+        .hero-info {
             padding: 20px;
             background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
-        }
-        .team-status {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px;
         }
         .team-name { font-family: 'Racing Sans One'; font-size: 24px; }
-        .championship-pos { 
+        .champ-pos { 
             background: #ff1801; color: white; padding: 5px 10px; 
             border-radius: 8px; font-weight: bold; font-size: 14px; 
         }
 
-        /* --- QUICK ACTIONS GRID --- */
-        .action-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+        /* --- 12 FEATURE GRID (4 PER BARIS) --- */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 Kolom */
+            gap: 10px;
+            padding: 20px;
         }
-        .action-card {
-            background: #222; border: 1px solid #333; border-radius: 15px;
-            padding: 15px; text-decoration: none; color: white;
-            transition: 0.3s; position: relative; overflow: hidden;
-        }
-        .action-card:hover { border-color: #ff1801; transform: translateY(-2px); }
-        .card-icon { font-size: 24px; margin-bottom: 8px; display: block; }
-        .card-title { font-family: 'Racing Sans One'; font-size: 14px; }
-        .card-desc { font-size: 10px; color: #888; margin-top: 4px; }
 
-        /* --- WIDGET SECTIONS --- */
-        .widget-container { padding: 0 20px; margin-top: 25px; }
+        .feat-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px 5px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+
+        .feat-card:hover { border-color: #ff1801; transform: translateY(-3px); background: #222; }
+        .feat-icon { font-size: 28px; margin-bottom: 8px; }
+        .feat-title { font-family: 'Racing Sans One'; font-size: 11px; line-height: 1.2; }
+
+        /* Warna khusus untuk kartu penting */
+        .card-race { background: linear-gradient(135deg, #cc0000, #880000); border: none; }
+        .card-race:hover { opacity: 0.9; }
+
+        /* --- WIDGETS --- */
+        .widget-section { padding: 0 20px; margin-top: 10px; }
         .w-header {
             font-family: 'Racing Sans One'; font-size: 18px; color: white;
             border-left: 4px solid #ff1801; padding-left: 10px; margin-bottom: 15px;
         }
 
-        /* R&D Progress */
-        .rd-item { background: #1a1a1a; padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #333; }
-        .rd-head { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
-        .progress-track { height: 6px; background: #333; border-radius: 3px; }
-        .progress-fill { height: 100%; background: #0055ff; border-radius: 3px; }
-
-        /* News Feed */
-        .news-feed { background: #1a1a1a; border-radius: 15px; padding: 15px; border: 1px solid #333; }
-        .news-item { border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 10px; }
-        .news-item:last-child { border: none; margin: 0; padding: 0; }
-        .n-time { font-size: 10px; color: #ff1801; font-weight: bold; }
-        .n-text { font-size: 13px; line-height: 1.4; margin-top: 4px; }
+        .news-box { background: #1a1a1a; padding: 15px; border-radius: 12px; border: 1px solid #333; }
+        .news-item { font-size: 13px; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+        .news-item:last-child { border: none; }
 
         /* --- BOTTOM NAV --- */
         .bottom-nav {
@@ -98,75 +104,87 @@
     <!-- Top Bar -->
     <div class="top-bar">
         <a href="#" class="logo">GRID <span>MANAGER</span></a>
-        <div class="finance-badge">$12.5M (Cap: $140M)</div>
+        <div class="finance-badge">$12.5M</div>
     </div>
 
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <div class="team-status">
-            <div class="team-name">SCUDERIA GRID</div>
-            <div class="championship-pos">#4 KONSTRUKTOR</div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="action-grid">
-            <a href="race-hub.html" class="action-card" style="background: linear-gradient(135deg, #cc0000, #880000); border:none;">
-                <span class="card-icon">🚩</span>
-                <span class="card-title">RACE HUB</span>
-                <div class="card-desc">Monaco GP - 19:00 WIB</div>
-            </a>
-            <a href="garage.html" class="action-card">
-                <span class="card-icon">🔧</span>
-                <span class="card-title">GARASI</span>
-                <div class="card-desc">Setup & Strategi</div>
-            </a>
-            <a href="rnd.html" class="action-card">
-                <span class="card-icon">🧬</span>
-                <span class="card-title">R&D LAB</span>
-                <div class="card-desc">Upgrade Parts</div>
-            </a>
-            <a href="staff.html" class="action-card">
-                <span class="card-icon">👥</span>
-                <span class="card-title">STAFF & HR</span>
-                <div class="card-desc">Kontrak & Moral</div>
-            </a>
-        </div>
+    <!-- Hero Info -->
+    <div class="hero-info">
+        <div class="team-name">SCUDERIA GRID</div>
+        <div class="champ-pos">#4 KONSTRUKTOR</div>
     </div>
 
-    <!-- Widget: R&D Status -->
-    <div class="widget-container">
-        <div class="w-header">STATUS PENGEMBANGAN</div>
-        <div class="rd-item">
-            <div class="rd-head"><span>Aerodinamika (Level 4)</span> <span>85%</span></div>
-            <div class="progress-track"><div class="progress-fill" style="width: 85%;"></div></div>
-        </div>
-        <div class="rd-item">
-            <div class="rd-head"><span>Mesin Power Unit (Level 2)</span> <span>40%</span></div>
-            <div class="progress-track"><div class="progress-fill" style="width: 40%; background:#ffd700;"></div></div>
-        </div>
+    <!-- 12 Feature Grid -->
+    <div class="feature-grid">
+        <!-- Baris 1: Core Gameplay -->
+        <a href="race-hub.html" class="feat-card card-race">
+            <span class="feat-icon">🚩</span>
+            <span class="feat-title">RACE HUB</span>
+        </a>
+        <a href="garage.html" class="feat-card">
+            <span class="feat-icon">🔧</span>
+            <span class="feat-title">GARASI</span>
+        </a>
+        <a href="rnd.html" class="feat-card">
+            <span class="feat-icon">🧬</span>
+            <span class="feat-title">R&D LAB</span>
+        </a>
+        <a href="standing.html" class="feat-card">
+            <span class="feat-icon">🏆</span>
+            <span class="feat-title">KLASEMEN</span>
+        </a>
+
+        <!-- Baris 2: Management -->
+        <a href="staff.html" class="feat-card">
+            <span class="feat-icon">👥</span>
+            <span class="feat-title">STAFF HR</span>
+        </a>
+        <a href="drivers.html" class="feat-card">
+            <span class="feat-icon">🏎️</span>
+            <span class="feat-title">DRIVER</span>
+        </a>
+        <a href="finance.html" class="feat-card">
+            <span class="feat-icon">💰</span>
+            <span class="feat-title">KEUANGAN</span>
+        </a>
+        <a href="sponsors.html" class="feat-card">
+            <span class="feat-icon">🤝</span>
+            <span class="feat-title">SPONSOR</span>
+        </a>
+
+        <!-- Baris 3: Social & Extra -->
+        <a href="forum.html" class="feat-card">
+            <span class="feat-icon">💬</span>
+            <span class="feat-title">FORUM</span>
+        </a>
+        <a href="calendar.html" class="feat-card">
+            <span class="feat-icon">📅</span>
+            <span class="feat-title">KALENDER</span>
+        </a>
+        <a href="market.html" class="feat-card">
+            <span class="feat-icon">🛒</span>
+            <span class="feat-title">TRANSFER</span>
+        </a>
+        <a href="profile.html" class="feat-card">
+            <span class="feat-icon">⚙️</span>
+            <span class="feat-title">PROFIL</span>
+        </a>
     </div>
 
-    <!-- Widget: Berita Terkini -->
-    <div class="widget-container" style="margin-bottom: 30px;">
-        <div class="w-header">BERITA PIT LANE</div>
-        <div class="news-feed">
-            <div class="news-item">
-                <div class="n-time">10 MENIT YANG LALU</div>
-                <div class="n-text">FIA merilis update regulasi sayap depan untuk musim depan.</div>
-            </div>
-            <div class="news-item">
-                <div class="n-time">KEMARIN</div>
-                <div class="n-text">Sponsor utama "GridOil" memperpanjang kontrak hingga 2028.</div>
-            </div>
+    <!-- Widget Berita -->
+    <div class="widget-section">
+        <div class="w-header">BERITA TERKINI</div>
+        <div class="news-box">
+            <div class="news-item"><strong>FIA UPDATE:</strong> Regulasi sayap depan berubah musim depan.</div>
+            <div class="news-item"><strong>RUMOR:</strong> Driver tim rival sedang mencari tim baru.</div>
         </div>
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <a href="dashboard.html" class="nav-link active"><span class="nav-ico">🏠</span>Home</a>
-        <a href="join-team.html" class="nav-link"><span class="nav-ico">🤝</span>Tim</a>
-        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
         <a href="race-hub.html" class="nav-link"><span class="nav-ico">🚩</span>Race</a>
+        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
+        <a href="profile.html" class="nav-link"><span class="nav-ico">⚙️</span>Profil</a>
     </div>
 
 </body>
