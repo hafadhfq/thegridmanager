@@ -1,1 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard - Grid Manager</title>
+    
+    <!-- Import Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Icon Library (Opsional, pakai emoji juga bisa) -->
+    
+    <style>
+        /* --- RESET & DASAR --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 80px; /* Space untuk bottom nav */
+        }
+
+        /* --- HEADER DASHBOARD --- */
+        .dash-header {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+            padding: 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-info h2 {
+            font-family: 'Racing Sans One', cursive;
+            margin: 0;
+            font-size: 24px;
+            color: white;
+        }
+
+        .team-rank {
+            font-size: 12px;
+            color: #ff1801;
+            font-weight: bold;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            border: 2px solid #ff1801;
+        }
+
+        /* --- STATS CARDS --- */
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .money { color: #00ff00; }
+        .points { color: #ff1801; }
+
+        /* --- MENU UTAMA --- */
+        .menu-section {
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-family: 'Racing Sans One', cursive;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #fff;
+            border-left: 4px solid #ff1801;
+            padding-left: 10px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .menu-item {
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-item:hover {
+            background: #2a2a2a;
+            border-color: #ff1801;
+            transform: translateY(-2px);
+        }
+
+        .menu-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .menu-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* --- BOTTOM NAVIGATION --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 10px;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: #ff1801;
+        }
+
+        .nav-icon {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Atas -->
+    <div class="dash-header">
+        <div class="team-info">
+            <h2>RED BULL RACING</h2>
+            <span class="team-rank">Rank #1 Global</span>
+        </div>
+        <div class="user-avatar">👤</div>
+    </div>
+
+    <!-- Statistik Tim -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-label">ANGGARAN TIM</div>
+            <div class="stat-value money">$12.5M</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">POIN KONSTRUKTOR</div>
+            <div class="stat-value points">450 PTS</div>
+        </div>
+    </div>
+
+    <!-- Menu Utama -->
+    <div class="menu-section">
+        <div class="section-title">PIT LANE</div>
+        
+        <div class="menu-grid">
+            <a href="/garage" class="menu-item">
+                <span class="menu-icon">🏎️</span>
+                <span class="menu-text">Garasi Mobil</span>
+            </a>
+            
+            <a href="/drivers" class="menu-item">
+                <span class="menu-icon">👨‍✈️</span>
+                <span class="menu-text">Pembalap</span>
+            </a>
+            
+            <a href="/market" class="menu-item">
+                <span class="menu-icon">🛒</span>
+                <span class="menu-text">Pasar Suku Cadang</span>
+            </a>
+            
+            <a href="/league" class="menu-item">
+                <span class="menu-icon">🏆</span>
+                <span class="menu-text">Klasemen Liga</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navigasi Bawah -->
+    <div class="bottom-nav">
+        <a href="/dashboard" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            Home
+        </a>
+        <a href="/race" class="nav-item">
+            <span class="nav-icon">🚩</span>
+            Balapan
+        </a>
+        <a href="/profile" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            Profil
+        </a>
+    </div>
+
+</body>
+</html>
 
