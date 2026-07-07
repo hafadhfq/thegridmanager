@@ -1,1 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsors - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 90px;
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-family: 'Racing Sans One'; font-size: 20px; color: white; text-decoration: none; }
+        .logo span { color: #ff1801; }
+
+        /* --- INCOME SUMMARY --- */
+        .income-summary {
+            margin: 20px;
+            background: linear-gradient(135deg, #1a1a1a, #222);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .is-label { font-size: 12px; color: #888; }
+        .is-value { font-family: 'Racing Sans One'; font-size: 24px; color: #ffd700; }
+        .is-badge { background: rgba(255, 215, 0, 0.1); color: #ffd700; padding: 4px 8px; border-radius: 6px; font-size: 10px; }
+
+        /* --- ACTIVE SPONSORS --- */
+        .section-title {
+            padding: 0 20px;
+            font-family: 'Racing Sans One';
+            font-size: 18px;
+            color: white;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff1801;
+            padding-left: 10px;
+        }
+
+        .sponsor-list { padding: 0 20px; }
+
+        .sponsor-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .sp-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .sp-logo { 
+            width: 40px; height: 40px; background: #fff; border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000;
+        }
+        .sp-info h4 { font-size: 15px; color: white; }
+        .sp-type { font-size: 10px; color: #888; text-transform: uppercase; }
+
+        .sp-target { margin-bottom: 10px; }
+        .sp-target-text { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #ccc; }
+        .sp-bar-bg { height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+        .sp-bar-fill { height: 100%; background: #00d2be; border-radius: 3px; }
+
+        .sp-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 10px; }
+        .sp-pay { font-size: 12px; color: #00ff00; font-weight: bold; }
+        .sp-btn { background: #333; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 10px; cursor: pointer; }
+
+        /* --- MARKETPLACE GRID --- */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 20px;
+            margin-top: 10px;
+        }
+
+        .market-card {
+            background: #1a1a1a;
+            border: 1px dashed #444;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .market-card:hover { border-color: #ffd700; background: #222; }
+        .mk-icon { font-size: 24px; margin-bottom: 8px; }
+        .mk-name { font-size: 12px; font-weight: bold; color: white; margin-bottom: 4px; }
+        .mk-val { font-size: 10px; color: #ffd700; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; border-top: 1px solid #333;
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
+        }
+        .nav-link { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-link.active { color: #ffd700; }
+        .nav-ico { display: block; font-size: 22px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <a href="finance.html" style="font-size: 12px; color: #aaa; text-decoration: none;">💰 Finance</a>
+    </div>
+
+    <!-- Income Summary -->
+    <div class="income-summary">
+        <div>
+            <div class="is-label">Total Pendapatan Sponsor</div>
+            <div class="is-value">$8.5M / Musim</div>
+        </div>
+        <div class="is-badge">3 Aktif</div>
+    </div>
+
+    <!-- Active Sponsors -->
+    <div class="section-title">SPONSOR AKTIF</div>
+    <div class="sponsor-list">
+        
+        <!-- Title Sponsor -->
+        <div class="sponsor-card">
+            <div class="sp-header">
+                <div class="sp-logo" style="background:#ff1801; color:white;">GO</div>
+                <div class="sp-info">
+                    <h4>GridOil Energy</h4>
+                    <div class="sp-type">Title Sponsor • 2 Tahun</div>
+                </div>
+            </div>
+            <div class="sp-target">
+                <div class="sp-target-text">
+                    <span>Target: Masuk Top 5 Konstruktor</span>
+                    <span>Posisi #4</span>
+                </div>
+                <div class="sp-bar-bg"><div class="sp-bar-fill" style="width: 80%;"></div></div>
+            </div>
+            <div class="sp-footer">
+                <div class="sp-pay">$5.0M / Tahun</div>
+                <button class="sp-btn">Detail</button>
+            </div>
+        </div>
+
+        <!-- Technical Partner -->
+        <div class="sponsor-card">
+            <div class="sp-header">
+                <div class="sp-logo" style="background:#0055ff; color:white;">TC</div>
+                <div class="sp-info">
+                    <h4>TechCorp Systems</h4>
+                    <div class="sp-type">Technical Partner • 1 Tahun</div>
+                </div>
+            </div>
+            <div class="sp-target">
+                <div class="sp-target-text">
+                    <span>Target: Riset 5 Part Baru</span>
+                    <span>3/5 Selesai</span>
+                </div>
+                <div class="sp-bar-bg"><div class="sp-bar-fill" style="width: 60%; background:#ffd700;"></div></div>
+            </div>
+            <div class="sp-footer">
+                <div class="sp-pay">$2.5M / Tahun</div>
+                <button class="sp-btn">Detail</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Marketplace -->
+    <div class="section-title" style="margin-top: 30px;">PASAR SPONSOR</div>
+    <div class="market-grid">
+        <div class="market-card">
+            <div class="mk-icon">👟</div>
+            <div class="mk-name">SpeedKicks</div>
+            <div class="mk-val">$1.2M / Thn</div>
+        </div>
+        <div class="market-card">
+            <div class="mk-icon">☕</div>
+            <div class="mk-name">JavaFuel</div>
+            <div class="mk-val">$800k / Thn</div>
+        </div>
+        <div class="market-card">
+            <div class="mk-icon">🏦</div>
+            <div class="mk-name">GlobalBank</div>
+            <div class="mk-val">$3.0M / Thn</div>
+        </div>
+        <div class="market-card">
+            <div class="mk-icon">✈️</div>
+            <div class="mk-name">SkyHigh</div>
+            <div class="mk-val">$1.5M / Thn</div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-link"><span class="nav-ico">🏠</span>Home</a>
+        <a href="race-hub.html" class="nav-link"><span class="nav-ico">🚩</span>Race</a>
+        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
+        <a href="sponsors.html" class="nav-link active"><span class="nav-ico">🤝</span>Sponsor</a>
+    </div>
+
+</body>
+</html>
 
