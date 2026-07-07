@@ -1,1 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Market - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 90px;
+        }
 
+        /* --- HEADER & SEARCH --- */
+        .app-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-family: 'Racing Sans One'; font-size: 20px; color: white; text-decoration: none; display: block; margin-bottom: 15px; }
+        .logo span { color: #ff1801; }
+        
+        .search-bar {
+            width: 100%;
+            background: #222;
+            border: 1px solid #333;
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* --- FILTERS --- */
+        .filters {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            overflow-x: auto;
+        }
+        .filter-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #888;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .filter-btn.active { background: #ff1801; color: white; border-color: #ff1801; }
+
+        /* --- MARKET LIST --- */
+        .market-list { padding: 0 20px; }
+
+        .market-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mc-avatar {
+            width: 50px; height: 50px;
+            background: #333;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            position: relative;
+        }
+        .flag-sm { position: absolute; bottom: -2px; right: -2px; font-size: 12px; background: #222; border-radius: 50%; padding: 2px; }
+
+        .mc-info { flex: 1; }
+        .mc-name { font-weight: bold; color: white; font-size: 15px; }
+        .mc-team { font-size: 11px; color: #888; margin-bottom: 5px; }
+        
+        .mc-stats { display: flex; gap: 10px; font-size: 10px; }
+        .stat-pill { background: #222; padding: 2px 6px; border-radius: 4px; color: #ccc; }
+
+        .mc-action { text-align: right; }
+        .mc-price { font-family: 'Racing Sans One'; font-size: 16px; color: #00ff00; margin-bottom: 5px; display: block; }
+        .bid-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .bid-btn:hover { background: #ff1801; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; border-top: 1px solid #333;
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
+        }
+        .nav-link { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-link.active { color: #ff1801; }
+        .nav-ico { display: block; font-size: 22px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Search -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MARKET</span></a>
+        <input type="text" class="search-bar" placeholder="Cari Driver atau Staff...">
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+        <button class="filter-btn active">Semua</button>
+        <button class="filter-btn">Driver</button>
+        <button class="filter-btn">Engineer</button>
+        <button class="filter-btn">Mekanik</button>
+        <button class="filter-btn">Free Agent</button>
+    </div>
+
+    <!-- Market List -->
+    <div class="market-list">
+        
+        <!-- Item 1: Top Driver -->
+        <div class="market-card">
+            <div class="mc-avatar">
+                🏎️
+                <span class="flag-sm">🇬🇧</span>
+            </div>
+            <div class="mc-info">
+                <div class="mc-name">Lando Norris</div>
+                <div class="mc-team">McLaren Racing • 25 Thn</div>
+                <div class="mc-stats">
+                    <span class="stat-pill">Speed: 90</span>
+                    <span class="stat-pill">Overtake: 88</span>
+                </div>
+            </div>
+            <div class="mc-action">
+                <span class="mc-price">$12.5M</span>
+                <button class="bid-btn">Negosiasi</button>
+            </div>
+        </div>
+
+        <!-- Item 2: Engineer -->
+        <div class="market-card">
+            <div class="mc-avatar">
+                👨‍🔧
+                <span class="flag-sm">🇩🇪</span>
+            </div>
+            <div class="mc-info">
+                <div class="mc-name">Hans Mueller</div>
+                <div class="mc-team">Free Agent • 42 Thn</div>
+                <div class="mc-stats">
+                    <span class="stat-pill">Aero: Expert</span>
+                    <span class="stat-pill">Setup: 92</span>
+                </div>
+            </div>
+            <div class="mc-action">
+                <span class="mc-price">$2.1M</span>
+                <button class="bid-btn">Rekrut</button>
+            </div>
+        </div>
+
+        <!-- Item 3: Young Talent -->
+        <div class="market-card">
+            <div class="mc-avatar">
+                👦
+                <span class="flag-sm">🇯🇵</span>
+            </div>
+            <div class="mc-info">
+                <div class="mc-name">Ren Sato</div>
+                <div class="mc-team">F2 Champion • 19 Thn</div>
+                <div class="mc-stats">
+                    <span class="stat-pill">Potensi: Tinggi</span>
+                    <span class="stat-pill">Speed: 78</span>
+                </div>
+            </div>
+            <div class="mc-action">
+                <span class="mc-price">$500k</span>
+                <button class="bid-btn">Scout</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-link"><span class="nav-ico">🏠</span>Home</a>
+        <a href="race-hub.html" class="nav-link"><span class="nav-ico">🚩</span>Race</a>
+        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
+        <a href="market.html" class="nav-link active"><span class="nav-ico">🛒</span>Market</a>
+    </div>
+
+</body>
+</html>
