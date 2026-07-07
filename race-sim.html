@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Race Live - Grid Manager</title>
+    <title>Race Sim Compact</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --red-bull: #0600EF; --mercedes: #00D2BE; --ferrari: #FF1801;
-            --mclaren: #FF8700; --aston: #006F62; --alpine: #0090FF;
-            --williams: #005AFF; --rb: #1634CB; --audi: #C3002F;
-            --haas: #B6BABD; --player: #FFD700;
+            --bg-dark: #0f0f0f;
+            --bg-panel: #1a1a1a;
+            --border: #333;
+            --text-main: #e0e0e0;
+            --text-dim: #888;
+            --accent: #ff1801;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            background-color: #0f0f0f;
-            color: #e0e0e0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             font-family: 'Roboto', sans-serif;
             height: 100vh;
             display: flex;
@@ -26,319 +28,289 @@
         }
 
         /* --- HEADER --- */
-        .race-header {
-            background: #1a1a1a;
-            padding: 8px 15px;
-            border-bottom: 2px solid #ff1801;
+        .header {
+            background: var(--bg-panel);
+            padding: 10px 15px;
+            border-bottom: 2px solid var(--accent);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0;
+            z-index: 10;
         }
-        .race-info h1 { font-family: 'Racing Sans One'; font-size: 16px; color: white; line-height: 1; }
-        .race-info span { font-size: 10px; color: #888; }
-        .lap-box { text-align: right; }
-        .lap-count { font-family: 'Racing Sans One'; font-size: 20px; color: #fff; }
+        .race-title { font-family: 'Racing Sans One'; font-size: 18px; }
+        .lap-counter { font-weight: bold; font-size: 16px; }
+        .lap-counter span { color: var(--accent); }
 
-        /* --- SPLIT LAYOUT --- */
-        .sim-container {
-            display: flex;
+        /* --- MAIN LAYOUT --- */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px; /* Comment takes rest, Timing fixed width */
             flex: 1;
-            overflow: hidden;
+            height: calc(100vh - 100px); /* Adjust for header/footer */
         }
 
-        /* LEFT: COMMENTARY (Scrollable) */
-        .comm-panel {
-            width: 40%;
-            background: #121212;
-            border-right: 1px solid #333;
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-grid { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+        }
+
+        /* --- LEFT: COMMENTARY (Scrollable) --- */
+        .comm-section {
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            background: #121212;
         }
-        .panel-title {
-            padding: 8px 10px;
-            background: #1a1a1a;
+        .panel-head {
+            padding: 8px 15px;
+            background: #222;
+            font-size: 11px;
             font-weight: bold;
-            font-size: 10px;
-            color: #888;
-            border-bottom: 1px solid #333;
             text-transform: uppercase;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border);
         }
         .comm-feed {
             flex: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* Scrollable */
             padding: 10px;
-            font-size: 11px;
-            line-height: 1.4;
-        }
-        .comm-item {
-            margin-bottom: 8px;
-            padding-left: 8px;
-            border-left: 2px solid #333;
-            animation: fadeIn 0.3s ease;
-        }
-        .comm-lap { color: #ff1801; font-weight: bold; margin-right: 4px; }
-
-        /* RIGHT: TIMING (Scrollable) */
-        .timing-panel {
-            width: 60%;
-            background: #0f0f0f;
-            overflow-y: auto;
             display: flex;
-            flex-direction: column;
+            flex-direction: column-reverse; /* Newest at bottom */
         }
-        
-        .timing-row {
+        .c-item {
+            font-size: 13px;
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #333;
+            line-height: 1.3;
+        }
+        .c-lap { color: var(--accent); font-weight: bold; font-size: 11px; margin-right: 5px; }
+
+        /* --- RIGHT: TIMING (Compact) --- */
+        .timing-section {
+            background: var(--bg-panel);
+            overflow-y: auto;
+        }
+        .t-row {
             display: flex;
             align-items: center;
             padding: 6px 10px;
             border-bottom: 1px solid #222;
-            height: 36px;
+            font-size: 13px;
             transition: background 0.2s;
         }
-        .timing-row.highlight { background: rgba(255, 215, 0, 0.15); border-left: 3px solid var(--player); }
+        .t-row.player { background: rgba(255, 215, 0, 0.1); border-left: 3px solid gold; }
         
-        .t-pos { width: 25px; font-weight: bold; color: #666; font-size: 12px; }
-        .t-driver-info { flex: 1; display: flex; align-items: center; gap: 6px; overflow: hidden; }
-        .team-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-        .d-name { font-size: 12px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .t-pos { width: 25px; font-weight: bold; color: var(--text-dim); font-size: 12px; }
+        .t-info { flex: 1; display: flex; align-items: center; gap: 6px; overflow: hidden; }
         
+        /* Color Stripe & Name in one line */
+        .team-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .d-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+        
+        /* Gap on the right */
         .t-gap { 
-            width: 60px; 
-            text-align: right; 
-            font-size: 11px; 
-            color: #aaa; 
             font-family: monospace; 
-            font-weight: bold;
+            font-size: 12px; 
+            color: var(--text-dim); 
+            text-align: right;
+            min-width: 60px;
         }
+        .gap-val { color: #fff; }
 
-        /* --- CONTROLS --- */
-        .controls-bar {
-            background: #1a1a1a;
-            padding: 10px;
-            border-top: 1px solid #333;
+        /* --- FOOTER CONTROLS --- */
+        .controls {
+            height: 50px;
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border);
             display: flex;
-            gap: 10px;
             justify-content: center;
-            flex-shrink: 0;
+            align-items: center;
+            gap: 15px;
         }
         .btn {
-            padding: 8px 16px;
+            padding: 8px 24px;
             border-radius: 4px;
             border: none;
             font-weight: bold;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 12px;
             text-transform: uppercase;
         }
-        .btn-start { background: #00ff00; color: black; }
-        .btn-pause { background: #ff1801; color: white; }
-        .btn-menu { background: #333; color: white; }
+        .btn-go { background: var(--accent); color: white; }
+        .btn-stop { background: #333; color: white; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
 
     <!-- Header -->
-    <div class="race-header">
-        <div class="race-info">
-            <h1>CANADIAN GP 🇨🇦</h1>
-            <span>Gilles Villeneuve • Dry</span>
-        </div>
-        <div class="lap-box">
-            <div class="lap-count"><span id="lap-display">0</span>/70</div>
-        </div>
+    <div class="header">
+        <div class="race-title">🇨🇦 CANADIAN GP</div>
+        <div class="lap-counter">LAP <span id="lap-num">0</span>/70</div>
     </div>
 
-    <!-- Main Content -->
-    <div class="sim-container">
-        <!-- Commentary -->
-        <div class="comm-panel">
-            <div class="panel-title">Live Feed</div>
-            <div class="comm-feed" id="comm-feed">
-                <div class="comm-item">Ready for lights out...</div>
+    <!-- Main Grid -->
+    <div class="main-grid">
+        
+        <!-- Left: Commentary -->
+        <div class="comm-section">
+            <div class="panel-head">Live Commentary</div>
+            <div class="comm-feed" id="feed">
+                <div class="c-item">Ready to start...</div>
             </div>
         </div>
 
-        <!-- Timing -->
-        <div class="timing-panel">
-            <div class="panel-title">Standings</div>
+        <!-- Right: Timing -->
+        <div class="timing-section">
+            <div class="panel-head">Live Classification</div>
             <div id="timing-list">
-                <!-- Rows generated by JS -->
+                <!-- JS will populate this -->
             </div>
         </div>
     </div>
 
     <!-- Controls -->
-    <div class="controls-bar">
-        <button class="btn btn-menu" onclick="window.location.href='calendar.html'">Exit</button>
-        <button class="btn btn-start" id="action-btn" onclick="toggleRace()">Start Race</button>
+    <div class="controls">
+        <button class="btn btn-stop" onclick="resetSim()">Reset</button>
+        <button class="btn btn-go" id="start-btn" onclick="toggleSim()">START RACE</button>
     </div>
 
     <script>
-        // --- DATA 2026 GRID ---
+        // --- DATA ---
         const teams = [
-            { name: "Red Bull", color: "var(--red-bull)" },
-            { name: "Mercedes", color: "var(--mercedes)" },
-            { name: "Ferrari", color: "var(--ferrari)" },
-            { name: "McLaren", color: "var(--mclaren)" },
-            { name: "Aston Martin", color: "var(--aston)" },
-            { name: "Alpine", color: "var(--alpine)" },
-            { name: "Williams", color: "var(--williams)" },
-            { name: "RB", color: "var(--rb)" },
-            { name: "Audi", color: "var(--audi)" }, // Sauber rebranded
-            { name: "Haas", color: "var(--haas)" },
-            { name: "Grid FC", color: "var(--player)" } // Player Team
+            { n: "Red Bull", c: "#0600EF" }, { n: "Mercedes", c: "#00D2BE" },
+            { n: "Ferrari", c: "#FF1801" }, { n: "McLaren", c: "#FF8700" },
+            { n: "Aston Martin", c: "#006F62" }, { n: "Alpine", c: "#0090FF" },
+            { n: "Williams", c: "#005AFF" }, { n: "RB", c: "#1634CB" },
+            { n: "Sauber", c: "#000000" }, { n: "Haas", c: "#B6BABD" },
+            { n: "Grid FC", c: "#FFD700" } // Player Team
         ];
 
-        // 22 Drivers
+        // Initial Grid (22 Drivers)
         let drivers = [
-            { id: 1, name: "Verstappen", teamIdx: 0, pos: 1, gap: 0, status: "Track" },
-            { id: 2, name: "Hadjar", teamIdx: 0, pos: 2, gap: 1.2, status: "Track" },
-            { id: 3, name: "Antonelli", teamIdx: 1, pos: 3, gap: 3.5, status: "Track" },
-            { id: 4, name: "Russell", teamIdx: 1, pos: 4, gap: 4.1, status: "Track" },
-            { id: 5, name: "Leclerc", teamIdx: 2, pos: 5, gap: 5.8, status: "Track" },
-            { id: 6, name: "Hamilton", teamIdx: 2, pos: 6, gap: 6.2, status: "Track" },
-            { id: 7, name: "Norris", teamIdx: 3, pos: 7, gap: 8.5, status: "Track" },
-            { id: 8, name: "Piastri", teamIdx: 3, pos: 8, gap: 9.0, status: "Track" },
-            { id: 9, name: "Alonso", teamIdx: 4, pos: 9, gap: 12.1, status: "Track" },
-            { id: 10, name: "Stroll", teamIdx: 4, pos: 10, gap: 14.5, status: "Track" },
-            { id: 11, name: "Gasly", teamIdx: 5, pos: 11, gap: 16.2, status: "Track" },
-            { id: 12, name: "Doohan", teamIdx: 5, pos: 12, gap: 18.0, status: "Track" },
-            { id: 13, name: "Albon", teamIdx: 6, pos: 13, gap: 22.5, status: "Track" },
-            { id: 14, name: "Sargeant", teamIdx: 6, pos: 14, gap: 24.1, status: "Track" },
-            { id: 15, name: "Tsunoda", teamIdx: 7, pos: 15, gap: 28.9, status: "Track" },
-            { id: 16, name: "Lawson", teamIdx: 7, pos: 16, gap: 30.2, status: "Track" },
-            { id: 17, name: "Hulkenberg", teamIdx: 8, pos: 17, gap: 35.5, status: "Track" },
-            { id: 18, name: "Bortoleto", teamIdx: 8, pos: 18, gap: 38.1, status: "Track" },
-            { id: 19, name: "Bearman", teamIdx: 9, pos: 19, gap: 42.0, status: "Track" },
-            { id: 20, name: "Ocon", teamIdx: 9, pos: 20, gap: 43.5, status: "Track" },
-            // PLAYER
-            { id: 21, name: "YOU (Player)", teamIdx: 10, pos: 14, gap: 25.0, status: "Track" },
-            { id: 22, name: "Rookie", teamIdx: 10, pos: 18, gap: 39.0, status: "Track" }
+            { n: "Verstappen", t: 0, p: 1, g: 0 }, { n: "Perez", t: 0, p: 2, g: 2.1 },
+            { n: "Hamilton", t: 1, p: 3, g: 5.4 }, { n: "Russell", t: 1, p: 4, g: 6.2 },
+            { n: "Leclerc", t: 2, p: 5, g: 8.5 }, { n: "Sainz", t: 2, p: 6, g: 9.1 },
+            { n: "Norris", t: 3, p: 7, g: 12.3 }, { n: "Piastri", t: 3, p: 8, g: 13.0 },
+            { n: "Alonso", t: 4, p: 9, g: 15.5 }, { n: "Stroll", t: 4, p: 10, g: 18.2 },
+            // PLAYER START P11
+            { n: "YOU (Player)", t: 10, p: 11, g: 19.5, isP: true }, 
+            { n: "Gasly", t: 5, p: 12, g: 20.1 }, { n: "Ocon", t: 5, p: 13, g: 21.5 },
+            { n: "Albon", t: 6, p: 14, g: 25.0 }, { n: "Teammate", t: 10, p: 15, g: 26.4, isP: false },
+            { n: "Tsunoda", t: 7, p: 16, g: 28.9 }, { n: "Ricciardo", t: 7, p: 17, g: 30.1 },
+            { n: "Bottas", t: 8, p: 18, g: 35.2 }, { n: "Zhou", t: 8, p: 19, g: 36.5 },
+            { n: "Hulkenberg", t: 9, p: 20, g: 40.0 }, { n: "Magnussen", t: 9, p: 21, g: 41.2 },
+            { n: "Colapinto", t: 6, p: 22, g: 45.0 }
         ];
 
-        let currentLap = 0;
-        let isRunning = false;
-        let intervalId;
-        const totalLaps = 70;
+        let lap = 0;
+        let running = false;
+        let timer;
 
-        const feed = document.getElementById('comm-feed');
-        const timingList = document.getElementById('timing-list');
-        const lapDisplay = document.getElementById('lap-display');
-        const actionBtn = document.getElementById('action-btn');
-
+        // --- RENDER FUNCTIONS ---
         function renderTiming() {
-            timingList.innerHTML = '';
-            drivers.sort((a, b) => a.pos - b.pos);
-
-            drivers.forEach(d => {
-                const team = teams[d.teamIdx];
-                const isPlayer = d.teamIdx === 10;
-                
-                let gapText = "LEADER";
-                if (d.pos > 1) {
-                    if (d.status === "PIT") gapText = "PIT";
-                    else gapText = `+${d.gap.toFixed(1)}s`;
-                }
-
-                const row = document.createElement('div');
-                row.className = `timing-row ${isPlayer ? 'highlight' : ''}`;
-                row.innerHTML = `
-                    <div class="t-pos">${d.pos}</div>
-                    <div class="t-driver-info">
-                        <div class="team-dot" style="background:${team.color}"></div>
-                        <div class="d-name">${d.name}</div>
-                    </div>
-                    <div class="t-gap">${gapText}</div>
-                `;
-                timingList.appendChild(row);
-            });
-        }
-
-        function addCommentary(text) {
-            const div = document.createElement('div');
-            div.className = 'comm-item';
-            div.innerHTML = `<span class="comm-lap">L${currentLap}</span> ${text}`;
-            feed.prepend(div);
-            if (feed.children.length > 30) feed.lastChild.remove();
-        }
-
-        function simulateLap() {
-            if (currentLap >= totalLaps) {
-                finishRace();
-                return;
-            }
-            currentLap++;
-            lapDisplay.innerText = currentLap;
-
-            // Logic: Random Gap Changes
-            drivers.forEach(d => {
-                if (d.status === "Track") {
-                    d.gap += (Math.random() - 0.5) * 1.5;
-                    if (d.gap < 0.5 && d.pos !== 1) d.gap = 0.5;
-                }
-            });
-
-            // Logic: Random Events
-            const rand = Math.random();
+            const list = document.getElementById('timing-list');
+            list.innerHTML = '';
             
-            // Pit Stop
-            if (rand > 0.92) {
-                const pitter = drivers[Math.floor(Math.random() * drivers.length)];
-                if (pitter.status === "Track") {
-                    pitter.status = "PIT";
-                    addCommentary(`${pitter.name} boxes for Hards! 🛠️`);
-                }
-            } else if (rand < 0.08) {
-                const pitter = drivers.find(d => d.status === "PIT");
-                if (pitter) {
-                    pitter.status = "Track";
-                    pitter.gap = 20.0 + Math.random() * 10;
-                    addCommentary(`${pitter.name} rejoins in P${Math.floor(Math.random()*5)+15}.`);
-                }
+            // Sort by position
+            drivers.sort((a,b) => a.p - b.p);
+
+            drivers.forEach(d => {
+                const team = teams[d.t];
+                const gapText = d.p === 1 ? "LEADER" : `+${d.g.toFixed(1)}s`;
+                
+                const row = document.createElement('div');
+                row.className = `t-row ${d.isP ? 'player' : ''}`;
+                row.innerHTML = `
+                    <div class="t-pos">${d.p}</div>
+                    <div class="t-info">
+                        <div class="team-dot" style="background:${team.c}"></div>
+                        <div class="d-name">${d.n}</div>
+                    </div>
+                    <div class="t-gap"><span class="gap-val">${gapText}</span></div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function addLog(text) {
+            const feed = document.getElementById('feed');
+            const div = document.createElement('div');
+            div.className = 'c-item';
+            div.innerHTML = `<span class="c-lap">L${lap}</span> ${text}`;
+            feed.prepend(div); // Add to top
+        }
+
+        // --- SIMULATION LOGIC ---
+        function simulateLap() {
+            if(lap >= 70) { finishRace(); return; }
+            lap++;
+            document.getElementById('lap-num').innerText = lap;
+
+            // 1. Update Gaps randomly
+            drivers.forEach(d => {
+                if(Math.random() > 0.5) d.g += (Math.random() - 0.5) * 1.5;
+                if(d.g < 0.5 && d.p !== 1) d.g = 0.5;
+            });
+
+            // 2. Random Overtake Logic
+            // Pick a random index and swap with neighbor
+            const idx = Math.floor(Math.random() * (drivers.length - 1));
+            const d1 = drivers[idx];
+            const d2 = drivers[idx+1];
+            
+            // Simple swap logic for demo
+            if(Math.random() > 0.7) {
+                let tempP = d1.p; d1.p = d2.p; d2.p = tempP;
+                addLog(`<b>${d2.n}</b> overtakes ${d1.n} for P${d2.p}!`);
             }
 
-            // Overtake
-            if (rand > 0.6 && rand < 0.7) {
-                const idx = Math.floor(Math.random() * (drivers.length - 1));
-                const d1 = drivers[idx];
-                const d2 = drivers[idx+1];
-                if (d1.status === "Track" && d2.status === "Track") {
-                    let tempPos = d1.pos;
-                    d1.pos = d2.pos;
-                    d2.pos = tempPos;
-                    addCommentary(`<b>OVERTAKE!</b> ${d2.name} passes ${d1.name}!`);
-                }
+            // 3. Player Event
+            if(Math.random() > 0.8) {
+                const msgs = ["You set fastest lap!", "Engine mode: Push.", "Traffic ahead."];
+                addLog(msgs[Math.floor(Math.random()*msgs.length)]);
             }
 
             renderTiming();
         }
 
-        function toggleRace() {
-            if (isRunning) {
-                clearInterval(intervalId);
-                isRunning = false;
-                actionBtn.innerText = "RESUME";
-                actionBtn.className = "btn btn-start";
+        function toggleSim() {
+            const btn = document.getElementById('start-btn');
+            if(running) {
+                clearInterval(timer);
+                running = false;
+                btn.innerText = "RESUME";
+                btn.style.background = "#333";
             } else {
-                if (currentLap === 0) addCommentary("<b>LIGHTS OUT AND AWAY WE GO!</b> 🚩");
-                isRunning = true;
-                actionBtn.innerText = "PAUSE";
-                actionBtn.className = "btn btn-pause";
-                intervalId = setInterval(simulateLap, 1000); // Faster simulation
+                if(lap === 0) addLog("LIGHTS OUT! RACE STARTED!");
+                running = true;
+                btn.innerText = "PAUSE";
+                btn.style.background = "#ff1801";
+                timer = setInterval(simulateLap, 1000); // 1 sec = 1 lap
             }
         }
 
-        function finishRace() {
-            clearInterval(intervalId);
-            isRunning = false;
-            actionBtn.innerText = "FINISHED";
-            actionBtn.disabled = true;
-            addCommentary("<b>CHECKERED FLAG! RACE OVER!</b> 🏁");
+        function resetSim() {
+            clearInterval(timer);
+            running = false;
+            lap = 0;
+            document.getElementById('lap-num').innerText = "0";
+            document.getElementById('start-btn').innerText = "START RACE";
+            document.getElementById('feed').innerHTML = '<div class="c-item">Ready to start...</div>';
+            // Reset positions roughly
+            drivers.forEach((d, i) => { d.p = i + 1; d.g = i * 2.5; });
+            renderTiming();
         }
 
+        function finishRace() {
+            clearInterval(timer);
+            running = false;
+            addLog("🏁 CHECKERED FLAG! RACE FINISHED.");
+            document.getElementById('start-btn').innerText = "FINISHED";
+        }
+
+        // Init
         renderTiming();
     </script>
 </body>
