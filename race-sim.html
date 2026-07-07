@@ -3,246 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Race - Grid Manager</title>
-    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Live Race Sim - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --red-bull: #0600EF;
+            --mercedes: #00D2BE;
+            --ferrari: #FF1801;
+            --mclaren: #FF8700;
+            --aston: #006F62;
+            --alpine: #0090FF;
+            --williams: #005AFF;
+            --rb: #1634CB;
+            --kick: #000000;
+            --haas: #B6BABD;
+            --player: #FFD700; /* Warna Tim Pemain */
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             background-color: #0f0f0f;
             color: #e0e0e0;
             font-family: 'Roboto', sans-serif;
-            padding-bottom: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- LIVE HEADER --- */
-        .live-header {
+        /* --- HEADER --- */
+        .race-header {
             background: #1a1a1a;
-            padding: 15px;
-            position: sticky; top: 0; z-index: 100;
+            padding: 10px 15px;
             border-bottom: 2px solid #ff1801;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 100;
         }
-        .race-title { font-family: 'Racing Sans One'; font-size: 18px; color: white; }
-        .lap-counter { 
-            background: #333; padding: 5px 10px; border-radius: 5px; 
-            font-weight: bold; color: #00ff00; font-size: 14px;
+        .race-info h1 { font-family: 'Racing Sans One'; font-size: 18px; color: white; }
+        .race-info span { font-size: 12px; color: #888; }
+        
+        .lap-box {
+            text-align: right;
         }
-        .live-dot {
-            width: 10px; height: 10px; background: red; border-radius: 50%;
-            display: inline-block; margin-right: 5px; animation: blink 1s infinite;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
+        .lap-count { font-family: 'Racing Sans One'; font-size: 24px; color: #fff; }
+        .lap-label { font-size: 10px; color: #666; text-transform: uppercase; }
 
-        /* --- MAIN LAYOUT (Split View) --- */
-        .race-container {
+        /* --- MAIN CONTENT GRID --- */
+        .sim-container {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
-            padding: 15px;
+            flex: 1;
+            overflow: hidden;
         }
         @media (min-width: 768px) {
-            .race-container { grid-template-columns: 1fr 1fr; }
+            .sim-container { grid-template-columns: 35% 65%; }
         }
 
-        /* --- COMMENTARY BOX --- */
-        .comm-box {
+        /* --- LEFT: COMMENTARY --- */
+        .comm-panel {
+            background: #121212;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-title {
+            padding: 10px 15px;
             background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            height: 400px;
+            font-weight: bold;
+            font-size: 12px;
+            color: #888;
+            border-bottom: 1px solid #333;
+        }
+        .comm-feed {
+            flex: 1;
             overflow-y: auto;
             padding: 15px;
             display: flex;
-            flex-direction: column-reverse; /* Newest at bottom visually if we append normally, but let's stick to standard */
+            flex-direction: column-reverse; /* Newest at bottom visually */
         }
-        
-        .comm-entry {
+        .comm-item {
             margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #222;
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 1.4;
+            border-left: 2px solid #333;
+            padding-left: 10px;
+            animation: fadeIn 0.3s ease;
         }
-        .comm-lap { font-weight: bold; color: #ff1801; margin-right: 5px; }
+        .comm-lap { color: #ff1801; font-weight: bold; font-size: 11px; margin-right: 5px; }
         .comm-flag { margin-right: 5px; }
 
-        /* --- LIVE STANDINGS --- */
-        .standings-box {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 15px;
+        /* --- RIGHT: LIVE TIMING --- */
+        .timing-panel {
+            background: #0f0f0f;
+            overflow-y: auto;
+            padding-bottom: 60px; /* Space for controls */
         }
-        .st-title { font-family: 'Racing Sans One'; font-size: 16px; margin-bottom: 15px; border-left: 3px solid #00d2be; padding-left: 10px; }
-
-        .live-row {
-            display: flex;
-            align-items: center;
-            padding: 8px 0;
+        
+        .timing-table { width: 100%; border-collapse: collapse; }
+        .timing-row {
             border-bottom: 1px solid #222;
-            font-size: 13px;
+            height: 45px;
+            transition: background 0.3s;
         }
-        .lr-pos { width: 25px; font-weight: bold; color: #666; }
-        .lr-info { flex: 1; display: flex; align-items: center; gap: 8px; }
-        .lr-team-indicator { width: 4px; height: 15px; border-radius: 2px; }
-        .lr-name { color: white; font-weight: 500; }
-        .lr-gap { color: #888; font-size: 11px; width: 60px; text-align: right; }
+        .timing-row.highlight { background: rgba(255, 215, 0, 0.1); } /* Highlight Player */
+        
+        .t-pos { width: 40px; text-align: center; font-weight: bold; color: #666; }
+        .t-driver { flex: 1; padding-left: 10px; display: flex; align-items: center; gap: 8px; }
+        .team-stripe { width: 4px; height: 20px; border-radius: 2px; }
+        .d-name { font-size: 14px; color: white; font-weight: 500; }
+        .d-team { font-size: 10px; color: #666; display: none; } /* Hidden on mobile */
+        @media (min-width: 768px) { .d-team { display: block; } }
+
+        .t-gap { width: 80px; text-align: right; padding-right: 15px; font-size: 12px; color: #aaa; font-family: monospace; }
+        .t-pit { width: 40px; text-align: center; font-size: 10px; color: #888; }
 
         /* --- CONTROLS --- */
-        .controls {
+        .controls-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #1a1a1a; padding: 15px;
+            background: #1a1a1a;
+            padding: 10px 20px;
             border-top: 1px solid #333;
-            display: flex; gap: 10px; justify-content: center;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            z-index: 101;
         }
-        .btn-sim {
-            background: #ff1801; color: white; border: none;
-            padding: 10px 20px; border-radius: 8px; font-weight: bold;
-            cursor: pointer; flex: 1; max-width: 200px;
-        }
-        .btn-menu {
-            background: #333; color: white; border: none;
-            padding: 10px 20px; border-radius: 8px; font-weight: bold;
+        .btn {
+            padding: 8px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: bold;
             cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
         }
+        .btn-start { background: #00ff00; color: black; }
+        .btn-pause { background: #ff1801; color: white; }
+        .btn-menu { background: #333; color: white; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
 
-    <!-- Live Header -->
-    <div class="live-header">
-        <div class="race-title"><span class="live-dot"></span>CANADIAN GP</div>
-        <div class="lap-counter">LAP <span id="current-lap">1</span>/70</div>
+    <!-- Header -->
+    <div class="race-header">
+        <div class="race-info">
+            <h1>CANADIAN GP 🇨🇦</h1>
+            <span>Circuit Gilles Villeneuve</span>
+        </div>
+        <div class="lap-box">
+            <div class="lap-count"><span id="lap-display">0</span>/70</div>
+            <div class="lap-label">Laps</div>
+        </div>
     </div>
 
-    <div class="race-container">
-        <!-- Left: Commentary -->
-        <div class="comm-box" id="commentary-feed">
-            <div class="comm-entry">
-                <span class="comm-lap">LAP 1</span> Lights out and away we go! Verstappen gets a great start from P1.
+    <!-- Main Content -->
+    <div class="sim-container">
+        <!-- Commentary -->
+        <div class="comm-panel">
+            <div class="panel-title">LIVE COMMENTARY</div>
+            <div class="comm-feed" id="comm-feed">
+                <div class="comm-item">Waiting for lights out...</div>
             </div>
         </div>
 
-        <!-- Right: Live Standings -->
-        <div class="standings-box">
-            <div class="st-title">LIVE CLASSIFICATION</div>
-            <div id="live-standings">
-                <!-- Will be populated by JS -->
-            </div>
+        <!-- Live Timing -->
+        <div class="timing-panel">
+            <div class="panel-title">LIVE TIMING</div>
+            <table class="timing-table">
+                <tbody id="timing-body">
+                    <!-- Rows generated by JS -->
+                </tbody>
+            </table>
         </div>
     </div>
 
     <!-- Controls -->
-    <div class="controls">
-        <button class="btn-menu" onclick="window.location.href='calendar.html'">Menu</button>
-        <button class="btn-sim" id="sim-btn" onclick="toggleSimulation()">START RACE</button>
+    <div class="controls-bar">
+        <button class="btn btn-menu" onclick="window.location.href='calendar.html'">Exit</button>
+        <button class="btn btn-start" id="action-btn" onclick="toggleRace()">Start Race</button>
     </div>
 
     <script>
-        // Data Awal
-        let currentLap = 1;
+        // --- DATA SETUP (22 Drivers / 11 Teams) ---
+        const teams = [
+            { name: "Red Bull Racing", color: "var(--red-bull)" },
+            { name: "Mercedes", color: "var(--mercedes)" },
+            { name: "Ferrari", color: "var(--ferrari)" },
+            { name: "McLaren", color: "var(--mclaren)" },
+            { name: "Aston Martin", color: "var(--aston)" },
+            { name: "Alpine", color: "var(--alpine)" },
+            { name: "Williams", color: "var(--williams)" },
+            { name: "RB", color: "var(--rb)" },
+            { name: "Kick Sauber", color: "var(--kick)" },
+            { name: "Haas", color: "var(--haas)" },
+            { name: "Grid Manager FC", color: "var(--player)" } // Tim Pemain
+        ];
+
+        // Generate 22 Drivers
+        let drivers = [
+            { id: 1, name: "M. Verstappen", teamIdx: 0, pos: 1, gap: 0, status: "Track", laps: 0 },
+            { id: 2, name: "S. Perez", teamIdx: 0, pos: 2, gap: 2.1, status: "Track", laps: 0 },
+            { id: 3, name: "L. Hamilton", teamIdx: 1, pos: 3, gap: 5.4, status: "Track", laps: 0 },
+            { id: 4, name: "G. Russell", teamIdx: 1, pos: 4, gap: 6.2, status: "Track", laps: 0 },
+            { id: 5, name: "C. Leclerc", teamIdx: 2, pos: 5, gap: 8.5, status: "Track", laps: 0 },
+            { id: 6, name: "C. Sainz", teamIdx: 2, pos: 6, gap: 9.1, status: "Track", laps: 0 },
+            { id: 7, name: "L. Norris", teamIdx: 3, pos: 7, gap: 12.3, status: "Track", laps: 0 },
+            { id: 8, name: "O. Piastri", teamIdx: 3, pos: 8, gap: 13.0, status: "Track", laps: 0 },
+            { id: 9, name: "F. Alonso", teamIdx: 4, pos: 9, gap: 15.5, status: "Track", laps: 0 },
+            { id: 10, name: "L. Stroll", teamIdx: 4, pos: 10, gap: 18.2, status: "Track", laps: 0 },
+            { id: 11, name: "P. Gasly", teamIdx: 5, pos: 11, gap: 20.1, status: "Track", laps: 0 },
+            { id: 12, name: "E. Ocon", teamIdx: 5, pos: 12, gap: 21.5, status: "Track", laps: 0 },
+            { id: 13, name: "A. Albon", teamIdx: 6, pos: 13, gap: 25.0, status: "Track", laps: 0 },
+            { id: 14, name: "F. Colapinto", teamIdx: 6, pos: 14, gap: 26.4, status: "Track", laps: 0 },
+            { id: 15, name: "Y. Tsunoda", teamIdx: 7, pos: 15, gap: 28.9, status: "Track", laps: 0 },
+            { id: 16, name: "D. Ricciardo", teamIdx: 7, pos: 16, gap: 30.1, status: "Track", laps: 0 },
+            { id: 17, name: "V. Bottas", teamIdx: 8, pos: 17, gap: 35.2, status: "Track", laps: 0 },
+            { id: 18, name: "G. Zhou", teamIdx: 8, pos: 18, gap: 36.5, status: "Track", laps: 0 },
+            { id: 19, name: "N. Hulkenberg", teamIdx: 9, pos: 19, gap: 40.0, status: "Track", laps: 0 },
+            { id: 20, name: "K. Magnussen", teamIdx: 9, pos: 20, gap: 41.2, status: "Track", laps: 0 },
+            // PLAYER DRIVERS
+            { id: 21, name: "YOU (Player)", teamIdx: 10, pos: 11, gap: 19.5, status: "Track", laps: 0 }, // Start P11
+            { id: 22, name: "Teammate", teamIdx: 10, pos: 15, gap: 29.0, status: "Track", laps: 0 }     // Start P15
+        ];
+
+        // --- GAME STATE ---
+        let currentLap = 0;
         let isRunning = false;
         let intervalId;
+        const totalLaps = 70;
 
-        const drivers = [
-            { name: "M. Verstappen", team: "Red Bull", color: "#0055ff", pos: 1, gap: "Leader" },
-            { name: "L. Hamilton", team: "Mercedes", color: "#00d2be", pos: 2, gap: "+1.2s" },
-            { name: "C. Leclerc", team: "Ferrari", color: "#ff1801", pos: 3, gap: "+2.5s" },
-            { name: "YOU (Player)", team: "Grid Mgr", color: "#ffd700", pos: 4, gap: "+3.1s" },
-            { name: "F. Alonso", team: "Aston Martin", color: "#006f62", pos: 5, gap: "+5.4s" }
-        ];
+        // --- DOM ELEMENTS ---
+        const feed = document.getElementById('comm-feed');
+        const tbody = document.getElementById('timing-body');
+        const lapDisplay = document.getElementById('lap-display');
+        const actionBtn = document.getElementById('action-btn');
 
-        const events = [
-            "Verstappen sets the fastest lap of the race!",
-            "Hamilton is pushing hard, closing the gap to P1.",
-            "Leclerc reports some vibration on the front left tire.",
-            "Yellow flag in Sector 2, debris on track.",
-            "DRS enabled for the next 2 zones.",
-            "Your engineer says: 'Push now, box in 2 laps.'",
-            "Alonso defends brilliantly from behind!"
-        ];
+        // --- FUNCTIONS ---
 
-        function renderStandings() {
-            const container = document.getElementById('live-standings');
-            container.innerHTML = '';
-            
+        function renderTiming() {
+            tbody.innerHTML = '';
             // Sort by position
             drivers.sort((a, b) => a.pos - b.pos);
 
             drivers.forEach(d => {
+                const team = teams[d.teamIdx];
+                const isPlayer = d.teamIdx === 10;
+                
+                // Format Gap
+                let gapText = "Leader";
+                if (d.pos > 1) {
+                    if (d.status === "PIT") gapText = "PIT";
+                    else gapText = `+${d.gap.toFixed(1)}s`;
+                }
+
                 const row = `
-                    <div class="live-row">
-                        <div class="lr-pos">${d.pos}</div>
-                        <div class="lr-info">
-                            <div class="lr-team-indicator" style="background:${d.color}"></div>
-                            <span class="lr-name">${d.name}</span>
-                        </div>
-                        <div class="lr-gap">${d.gap}</div>
-                    </div>
+                    <tr class="timing-row ${isPlayer ? 'highlight' : ''}">
+                        <td class="t-pos">${d.pos}</td>
+                        <td class="t-driver">
+                            <div class="team-stripe" style="background:${team.color}"></div>
+                            <div>
+                                <div class="d-name">${d.name}</div>
+                                <div class="d-team">${team.name}</div>
+                            </div>
+                        </td>
+                        <td class="t-gap">${gapText}</td>
+                        <td class="t-pit">${d.status === "PIT" ? '🛠️' : ''}</td>
+                    </tr>
                 `;
-                container.innerHTML += row;
+                tbody.innerHTML += row;
             });
         }
 
-        function addCommentary(text) {
-            const feed = document.getElementById('commentary-feed');
-            const entry = document.createElement('div');
-            entry.className = 'comm-entry';
-            entry.innerHTML = `<span class="comm-lap">LAP ${currentLap}</span> ${text}`;
-            feed.prepend(entry); // Add to top
+        function addCommentary(text, type="normal") {
+            const div = document.createElement('div');
+            div.className = 'comm-item';
+            let icon = type === "flag" ? "🚩" : "🏎️";
+            div.innerHTML = `<span class="comm-lap">LAP ${currentLap}</span> ${icon} ${text}`;
+            feed.prepend(div);
+            
+            // Keep feed clean (max 50 items)
+            if (feed.children.length > 50) feed.lastChild.remove();
         }
 
         function simulateLap() {
-            if (currentLap >= 70) {
-                clearInterval(intervalId);
-                document.getElementById('sim-btn').innerText = "FINISH";
-                addCommentary("🏁 CHECKERED FLAG! Race Finished.");
+            if (currentLap >= totalLaps) {
+                finishRace();
                 return;
             }
 
             currentLap++;
-            document.getElementById('current-lap').innerText = currentLap;
+            lapDisplay.innerText = currentLap;
 
-            // Randomize gaps slightly
+            // 1. Update Gaps & Positions (Simple Logic)
             drivers.forEach(d => {
-                if (d.pos !== 1) {
-                    let change = (Math.random() * 0.5).toFixed(1);
-                    d.gap = `+${(parseFloat(d.gap.replace('+','')) + parseFloat(change)).toFixed(1)}s`;
+                if (d.status === "Track") {
+                    // Random gap change
+                    d.gap += (Math.random() - 0.5) * 2; 
+                    if (d.gap < 0.5 && d.pos !== 1) d.gap = 0.5;
                 }
             });
 
-            // Random Event Chance
-            if (Math.random() > 0.7) {
-                const randomEvent = events[Math.floor(Math.random() * events.length)];
-                addCommentary(randomEvent);
-            } else {
-                addCommentary(`Drivers complete Lap ${currentLap}. Pace is steady.`);
+            // 2. Random Events
+            const rand = Math.random();
+            
+            // Pit Stop Logic (Random chance for someone to pit)
+            if (rand > 0.9) {
+                const pitter = drivers[Math.floor(Math.random() * drivers.length)];
+                if (pitter.status === "Track") {
+                    pitter.status = "PIT";
+                    addCommentary(`${pitter.name} boxes for fresh tires!`, "flag");
+                }
+            } else if (rand < 0.1) {
+                // Someone exits pits
+                const pitter = drivers.find(d => d.status === "PIT");
+                if (pitter) {
+                    pitter.status = "Track";
+                    pitter.gap = 25.0; // Rejoin with gap
+                    addCommentary(`${pitter.name} rejoins the track.`, "flag");
+                }
             }
 
-            renderStandings();
+            // Overtake / Incident Logic
+            if (rand > 0.7 && rand < 0.8) {
+                const idx = Math.floor(Math.random() * (drivers.length - 1));
+                const d1 = drivers[idx];
+                const d2 = drivers[idx+1];
+                
+                // Swap positions logic (simplified)
+                if (d1.status === "Track" && d2.status === "Track") {
+                    let tempPos = d1.pos;
+                    d1.pos = d2.pos;
+                    d2.pos = tempPos;
+                    addCommentary(`Huge battle! ${d2.name} overtakes ${d1.name} for P${d2.pos}!`);
+                }
+            } else if (rand < 0.05) {
+                const victim = drivers[Math.floor(Math.random() * drivers.length)];
+                addCommentary(`Yellow Flag! ${victim.name} runs wide at Turn 1.`);
+            }
+
+            // Player Specific Commentary
+            if (Math.random() > 0.8) {
+                addCommentary("Your engineer: 'Pace is good, keep pushing.'");
+            }
+
+            renderTiming();
         }
 
-        function toggleSimulation() {
-            const btn = document.getElementById('sim-btn');
-            if (!isRunning) {
-                isRunning = true;
-                btn.innerText = "PAUSE RACE";
-                btn.style.background = "#ffd700"; // Yellow for pause
-                btn.style.color = "black";
-                intervalId = setInterval(simulateLap, 2000); // Speed: 2 seconds per lap
-            } else {
-                isRunning = false;
-                btn.innerText = "RESUME RACE";
-                btn.style.background = "#ff1801"; // Red for resume
-                btn.style.color = "white";
+        function toggleRace() {
+            if (isRunning) {
                 clearInterval(intervalId);
+                isRunning = false;
+                actionBtn.innerText = "RESUME";
+                actionBtn.className = "btn btn-start";
+            } else {
+                if (currentLap === 0) addCommentary("LIGHTS OUT AND AWAY WE GO!");
+                isRunning = true;
+                actionBtn.innerText = "PAUSE";
+                actionBtn.className = "btn btn-pause";
+                intervalId = setInterval(simulateLap, 1500); // 1.5 sec per lap
             }
+        }
+
+        function finishRace() {
+            clearInterval(intervalId);
+            isRunning = false;
+            actionBtn.innerText = "FINISHED";
+            actionBtn.disabled = true;
+            addCommentary("🏁 CHECKERED FLAG! RACE COMPLETE!", "flag");
         }
 
         // Initial Render
-        renderStandings();
+        renderTiming();
     </script>
 </body>
 </html>
-
