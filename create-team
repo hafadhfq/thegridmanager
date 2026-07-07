@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bentuk Tim - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #0f0f0f; 
+            color: white; 
+            font-family: 'Roboto', sans-serif; 
+            padding: 20px; 
+            text-align: center; 
+        }
+        h1 { font-family: 'Racing Sans One', cursive; color: #ff1801; margin-bottom: 5px; }
+        p { color: #888; font-size: 14px; margin-bottom: 30px; }
+        
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; margin-bottom: 8px; color: #aaa; font-size: 12px; font-weight: bold; letter-spacing: 1px; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            background: #1a1a1a; 
+            border: 1px solid #333; 
+            color: white; 
+            border-radius: 10px; 
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: #ff1801; }
+        
+        /* --- COLOR PICKER BULAT --- */
+        .color-palette { 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+            flex-wrap: wrap;
+            margin: 25px 0; 
+        }
+        
+        .color-btn { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            border: 3px solid transparent; 
+            cursor: pointer; 
+            transition: all 0.2s ease;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        .color-btn:hover { transform: scale(1.1); }
+        
+        /* Efek saat warna dipilih */
+        .color-btn.selected { 
+            border-color: white; 
+            transform: scale(1.15);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Preview Livery Mobil */
+        #livery-preview {
+            width: 100%; 
+            height: 80px; 
+            border-radius: 15px; 
+            margin-top: 15px;
+            background: #222; 
+            border: 2px dashed #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 12px;
+            transition: 0.5s;
+        }
+
+        .btn-submit {
+            background: linear-gradient(180deg, #ff4d4d 0%, #cc0000 100%);
+            color: white; 
+            border: none; 
+            padding: 15px 30px;
+            border-radius: 50px; 
+            font-family: 'Racing Sans One', cursive; 
+            font-size: 20px;
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(204, 0, 0, 0.4);
+        }
+        .btn-submit:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+    <h1>IDENTITAS TIM</h1>
+    <p>Tentukan nama dan warna livery timmu.</p>
+
+    <div class="form-group">
+        <label>NAMA TIM</label>
+        <input type="text" id="teamName" placeholder="Contoh: Red Bull Racing">
+    </div>
+
+    <div class="form-group">
+        <label>DRIVER UTAMA</label>
+        <input type="text" id="driverName" placeholder="Nama panggilanmu">
+    </div>
+
+    <div class="form-group">
+        <label>PARTNER TIM (MAKS 2 ORANG)</label>
+        <input type="text" id="partnerName" placeholder="Nama temanmu (Opsional)">
+    </div>
+
+    <label>PILIH WARNA LIVERY (MAKS 3)</label>
+    
+    <!-- Pilihan Warna Bulat -->
+    <div class="color-palette">
+        <div class="color-btn" style="background: #ff0000;" onclick="selectColor(this, '#ff0000')"></div>
+        <div class="color-btn" style="background: #000000;" onclick="selectColor(this, '#000000')"></div>
+        <div class="color-btn" style="background: #ffffff;" onclick="selectColor(this, '#ffffff')"></div>
+        <div class="color-btn" style="background: #ffd700;" onclick="selectColor(this, '#ffd700')"></div>
+        <div class="color-btn" style="background: #0055ff;" onclick="selectColor(this, '#0055ff')"></div>
+        <div class="color-btn" style="background: #00ff00;" onclick="selectColor(this, '#00ff00')"></div>
+        <div class="color-btn" style="background: #ff00ff;" onclick="selectColor(this, '#ff00ff')"></div>
+        <div class="color-btn" style="background: #00ffff;" onclick="selectColor(this, '#00ffff')"></div>
+    </div>
+    
+    <!-- Preview Kombinasi Warna -->
+    <div id="livery-preview">Preview Livery Tim</div>
+
+    <button class="btn-submit" onclick="submitTeam()">BENTUK TIM</button>
+
+    <script src="game-logic.js"></script>
+
