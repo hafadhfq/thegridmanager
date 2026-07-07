@@ -1,1 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff & HR - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 90px;
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-family: 'Racing Sans One'; font-size: 20px; color: white; text-decoration: none; }
+        .logo span { color: #ff1801; }
+
+        /* --- TEAM MORALE WIDGET --- */
+        .morale-widget {
+            margin: 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .morale-icon { font-size: 30px; }
+        .morale-info h3 { font-family: 'Racing Sans One'; font-size: 18px; margin-bottom: 5px; }
+        .morale-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+        .morale-fill { height: 100%; width: 78%; background: linear-gradient(90deg, #ffd700, #00ff00); }
+
+        /* --- STAFF LIST --- */
+        .section-title {
+            padding: 0 20px;
+            font-family: 'Racing Sans One';
+            font-size: 18px;
+            color: white;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff1801;
+            padding-left: 10px;
+        }
+
+        .staff-list { padding: 0 20px; }
+
+        .staff-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .staff-avatar {
+            width: 50px; height: 50px;
+            background: #333;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+        }
+
+        .staff-details { flex: 1; }
+        .staff-name { font-weight: bold; color: white; font-size: 15px; }
+        .staff-role { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        
+        .skill-badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #222;
+            color: #ccc;
+            border: 1px solid #444;
+        }
+
+        .staff-action { text-align: right; }
+        .contract-status { font-size: 11px; color: #00ff00; margin-bottom: 5px; display: block; }
+        .manage-btn {
+            background: transparent;
+            border: 1px solid #555;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .manage-btn:hover { border-color: #ff1801; color: #ff1801; }
+
+        /* --- RECRUITMENT BANNER --- */
+        .recruit-banner {
+            margin: 20px;
+            background: linear-gradient(90deg, #0055ff, #002288);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .recruit-text h4 { font-family: 'Racing Sans One'; font-size: 16px; }
+        .recruit-text p { font-size: 11px; opacity: 0.8; }
+        .recruit-arrow { font-size: 20px; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; border-top: 1px solid #333;
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
+        }
+        .nav-link { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-link.active { color: #ff1801; }
+        .nav-ico { display: block; font-size: 22px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <a href="dashboard.html" style="font-size: 12px; color: #aaa; text-decoration: none;">🏠 Dashboard</a>
+    </div>
+
+    <!-- Team Morale -->
+    <div class="morale-widget">
+        <div class="morale-icon">😊</div>
+        <div class="morale-info" style="flex: 1;">
+            <h3>Moral Tim: BAIK (78%)</h3>
+            <div class="morale-bar"><div class="morale-fill"></div></div>
+        </div>
+    </div>
+
+    <!-- Current Staff -->
+    <div class="section-title">STAFF INTI</div>
+    <div class="staff-list">
+        
+        <!-- Race Engineer -->
+        <div class="staff-card">
+            <div class="staff-avatar">👨‍🔧</div>
+            <div class="staff-details">
+                <div class="staff-name">Adrian Newey Jr.</div>
+                <div class="staff-role">Race Engineer</div>
+                <span class="skill-badge">Setup: Expert</span>
+                <span class="skill-badge">Komunikasi: Baik</span>
+            </div>
+            <div class="staff-action">
+                <span class="contract-status">Kontrak: 2 Tahun</span>
+                <button class="manage-btn">Kelola</button>
+            </div>
+        </div>
+
+        <!-- Chief Mechanic -->
+        <div class="staff-card">
+            <div class="staff-avatar">👷‍♂️</div>
+            <div class="staff-details">
+                <div class="staff-name">Marco Mattiacci</div>
+                <div class="staff-role">Chief Mechanic</div>
+                <span class="skill-badge">Pit Stop: Cepat</span>
+                <span class="skill-badge">Reliabilitas: Tinggi</span>
+            </div>
+            <div class="staff-action">
+                <span class="contract-status">Kontrak: 1 Tahun</span>
+                <button class="manage-btn">Kelola</button>
+            </div>
+        </div>
+
+        <!-- Strategist -->
+        <div class="staff-card">
+            <div class="staff-avatar">📊</div>
+            <div class="staff-details">
+                <div class="staff-name">Hannah Schmitz</div>
+                <div class="staff-role">Head Strategist</div>
+                <span class="skill-badge">Prediksi Cuaca: Akurat</span>
+            </div>
+            <div class="staff-action">
+                <span class="contract-status">Kontrak: 3 Tahun</span>
+                <button class="manage-btn">Kelola</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recruitment Banner -->
+    <div class="recruit-banner">
+        <div class="recruit-text">
+            <h4>CARI TALENTA BARU</h4>
+            <p>Lihat pasar transfer staff tersedia</p>
+        </div>
+        <div class="recruit-arrow">➡️</div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-link"><span class="nav-ico">🏠</span>Home</a>
+        <a href="race-hub.html" class="nav-link"><span class="nav-ico">🚩</span>Race</a>
+        <a href="garage.html" class="nav-link"><span class="nav-ico">🔧</span>Garasi</a>
+        <a href="staff.html" class="nav-link active"><span class="nav-ico">👥</span>Staff</a>
+    </div>
+
+</body>
+</html>
 
