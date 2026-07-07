@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kualifikasi - Grid Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #0f0f0f; color: white; font-family: 'Roboto', sans-serif; padding-bottom: 80px; }
+
+        /* HEADER */
+        .app-header { background: #1a1a1a; padding: 15px 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo { font-family: 'Racing Sans One', cursive; font-size: 20px; color: white; text-decoration: none; }
+        .logo span { color: #ff1801; }
+
+        /* LIVE TIMING BOARD */
+        .timing-board { padding: 20px; }
+        .session-info { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .session-title { font-family: 'Racing Sans One', cursive; font-size: 24px; color: #ffd700; }
+        .timer { font-family: 'Racing Sans One', cursive; font-size: 24px; color: #ff1801; }
+
+        .leaderboard { width: 100%; border-collapse: collapse; }
+        .leaderboard th { text-align: left; color: #666; font-size: 12px; padding: 10px 5px; border-bottom: 1px solid #333; }
+        .leaderboard td { padding: 12px 5px; border-bottom: 1px solid #222; font-size: 14px; }
+        
+        .pos-col { width: 30px; font-weight: bold; color: #888; }
+        .driver-col { font-weight: bold; }
+        .team-col { font-size: 12px; color: #aaa; }
+        .time-col { text-align: right; font-family: monospace; letter-spacing: 1px; }
+        .gap-col { text-align: right; font-size: 12px; color: #666; }
+
+        /* Warna Status */
+        .purple { color: #d500f9; } /* Personal Best / Sector Terbaik */
+        .green { color: #00e676; }  /* Lebih cepat dari sebelumnya */
+        .yellow { color: #ffea00; } /* Sedang di lap cepat */
+        .red { color: #ff1744; }    /* Eliminated / Crash */
+
+        /* TRACK MAP PREVIEW */
+        .track-preview {
+            margin: 20px;
+            height: 150px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            font-family: 'Racing Sans One', cursive;
+            font-size: 20px;
+        }
+
+        /* FOOTER */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #333; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
+        .nav-item.active { color: #ff1801; }
+        .nav-icon { display: block; font-size: 20px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="app-header">
+        <a href="dashboard.html" class="logo">GRID <span>MANAGER</span></a>
+        <a href="dashboard.html" style="font-size: 12px; color: #aaa; text-decoration: none;">🏠 Dashboard</a>
+    </div>
+
+    <!-- Sesi Kualifikasi -->
+    <div class="timing-board">
+        <div class="session-info">
+            <div class="session-title">QUALIFYING 3 (Q3)</div>
+            <div class="timer">04:52</div>
+        </div>
+
+        <table class="leaderboard">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>DRIVER</th>
+                    <th>TIME</th>
+                    <th>GAP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- P1 -->
+                <tr>
+                    <td class="pos-col">1</td>
+                    <td>
+                        <div class="driver-col">M. Verstappen</div>
+                        <div class="team-col">Red Bull Racing</div>
+                    </td>
+                    <td class="time-col purple">1:10.452</td>
+                    <td class="gap-col">-</td>
+                </tr>
+                <!-- P2 -->
+                <tr>
+                    <td class="pos-col">2</td>
+                    <td>
+                        <div class="driver-col">L. Hamilton</div>
+                        <div class="team-col">Mercedes AMG</div>
+                    </td>
+                    <td class="time-col green">1:10.589</td>
+                    <td class="gap-col">+0.137</td>
+                </tr>
+                <!-- P3 -->
+                <tr>
+                    <td class="pos-col">3</td>
+                    <td>
+                        <div class="driver-col">C. Leclerc</div>
+                        <div class="team-col">Ferrari</div>
+                    </td>
+                    <td class="time-col">1:10.720</td>
+                    <td class="gap-col">+0.268</td>
+                </tr>
+                <!-- P4 -->
+                <tr>
+                    <td class="pos-col">4</td>
+                    <td>
+                        <div class="driver-col">L. Norris</div>
+                        <div class="team-col">McLaren</div>
+                    </td>
+                    <td class="time-col yellow">1:10.890</td>
+                    <td class="gap-col">+0.438</td>
+                </tr>
+                <!-- P5 (User) -->
+                <tr style="background: rgba(255, 24, 1, 0.1);">
+                    <td class="pos-col">5</td>
+                    <td>
+                        <div class="driver-col">YOU (Player)</div>
+                        <div class="team-col">Grid Manager FC</div>
+                    </td>
+                    <td class="time-col">1:11.050</td>
+                    <td class="gap-col">+0.598</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Track Preview -->
+    <div class="track-preview">
+        [PETA TREK MONACO]
+    </div>
+
+    <div style="padding: 0 20px; color: #888; font-size: 12px; text-align: center;">
+        <p>Sisa waktu untuk memperbaiki waktu putaran.</p>
+        <p>Posisi 1-10 akan lolos ke Q3.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
+        <a href="race-hub.html" class="nav-item active"><span class="nav-icon">🚩</span>Race</a>
+        <a href="profile.html" class="nav-item"><span class="nav-icon">⚙️</span>Profil</a>
+    </div>
+
+</body>
+</html>
