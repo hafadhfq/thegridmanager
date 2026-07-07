@@ -12,126 +12,82 @@
             background-color: #0f0f0f;
             color: #e0e0e0;
             font-family: 'Roboto', sans-serif;
-            padding-bottom: 90px; /* Ruang untuk footer */
+            padding-bottom: 90px;
         }
 
-        /* --- HEADER PROFIL TIM --- */
-        .team-header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
-            padding: 25px 20px;
-            border-bottom: 2px solid #ff1801;
+        /* --- HEADER & FINANCE --- */
+        .top-bar {
+            background: #1a1a1a;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #333;
+            position: sticky; top: 0; z-index: 100;
         }
-
-        .brand h1 {
-            font-family: 'Racing Sans One', cursive;
-            font-size: 24px;
-            color: white;
-            line-height: 1;
-        }
-
-        .brand span { color: #ff1801; }
-        .brand p { font-size: 12px; color: #888; margin-top: 5px; }
-
-        .finance-pill {
-            background: rgba(0, 255, 0, 0.1);
-            color: #00ff00;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
+        .logo { font-family: 'Racing Sans One'; font-size: 20px; color: white; text-decoration: none; }
+        .logo span { color: #ff1801; }
+        .finance-badge {
+            background: rgba(0, 255, 0, 0.1); color: #00ff00;
+            padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;
             border: 1px solid rgba(0, 255, 0, 0.3);
         }
 
-        /* --- STATISTIK UTAMA --- */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        /* --- HERO SECTION --- */
+        .hero-section {
             padding: 20px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+        }
+        .team-status {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+        .team-name { font-family: 'Racing Sans One'; font-size: 24px; }
+        .championship-pos { 
+            background: #ff1801; color: white; padding: 5px 10px; 
+            border-radius: 8px; font-weight: bold; font-size: 14px; 
         }
 
-        .stat-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 15px 10px;
-            text-align: center;
+        /* --- QUICK ACTIONS GRID --- */
+        .action-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+        }
+        .action-card {
+            background: #222; border: 1px solid #333; border-radius: 15px;
+            padding: 15px; text-decoration: none; color: white;
+            transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .action-card:hover { border-color: #ff1801; transform: translateY(-2px); }
+        .card-icon { font-size: 24px; margin-bottom: 8px; display: block; }
+        .card-title { font-family: 'Racing Sans One'; font-size: 14px; }
+        .card-desc { font-size: 10px; color: #888; margin-top: 4px; }
+
+        /* --- WIDGET SECTIONS --- */
+        .widget-container { padding: 0 20px; margin-top: 25px; }
+        .w-header {
+            font-family: 'Racing Sans One'; font-size: 18px; color: white;
+            border-left: 4px solid #ff1801; padding-left: 10px; margin-bottom: 15px;
         }
 
-        .stat-num { font-size: 20px; font-weight: bold; color: white; }
-        .stat-lbl { font-size: 10px; color: #666; text-transform: uppercase; margin-top: 4px; }
+        /* R&D Progress */
+        .rd-item { background: #1a1a1a; padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #333; }
+        .rd-head { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+        .progress-track { height: 6px; background: #333; border-radius: 3px; }
+        .progress-fill { height: 100%; background: #0055ff; border-radius: 3px; }
 
-        /* --- MENU AKSI CEPAT --- */
-        .quick-actions {
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
+        /* News Feed */
+        .news-feed { background: #1a1a1a; border-radius: 15px; padding: 15px; border: 1px solid #333; }
+        .news-item { border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 10px; }
+        .news-item:last-child { border: none; margin: 0; padding: 0; }
+        .n-time { font-size: 10px; color: #ff1801; font-weight: bold; }
+        .n-text { font-size: 13px; line-height: 1.4; margin-top: 4px; }
 
-        .action-btn {
-            background: #222;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 20px;
-            text-decoration: none;
-            color: white;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn:hover { border-color: #ff1801; transform: translateY(-3px); }
-        .action-btn.primary { background: linear-gradient(180deg, #ff4d4d 0%, #cc0000 100%); border: none; }
-        
-        .btn-icon { font-size: 28px; display: block; margin-bottom: 10px; }
-        .btn-title { font-family: 'Racing Sans One', cursive; font-size: 16px; }
-
-        /* --- WIDGET KONDISI MOBIL --- */
-        .widget { padding: 0 20px; margin-bottom: 25px; }
-        .w-title {
-            font-family: 'Racing Sans One', cursive;
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: #fff;
-            border-left: 4px solid #ff1801;
-            padding-left: 10px;
-        }
-
-        .car-health {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid #333;
-        }
-
-        .health-item { margin-bottom: 15px; }
-        .h-info { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
-        .bar-bg { height: 8px; background: #333; border-radius: 4px; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 4px; }
-
-        /* --- BERITA & JADWAL --- */
-        .news-item {
-            background: #222;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border-left: 3px solid #0055ff;
-        }
-        .n-date { font-size: 10px; color: #666; }
-        .n-text { font-size: 13px; margin-top: 5px; line-height: 1.4; }
-
-        /* --- BOTTOM NAVIGATION --- */
+        /* --- BOTTOM NAV --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: #1a1a1a; border-top: 1px solid #333;
             display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
         }
-
         .nav-link { text-align: center; color: #666; text-decoration: none; font-size: 10px; flex: 1; }
         .nav-link.active { color: #ff1801; }
         .nav-ico { display: block; font-size: 22px; margin-bottom: 4px; }
@@ -139,84 +95,73 @@
 </head>
 <body>
 
-    <!-- Header Tim -->
-    <div class="team-header">
-        <div class="brand">
-            <h1>GRID <span>MANAGER</span></h1>
-            <p>Owner: PlayerOne | Partner: -</p>
-        </div>
-        <div class="finance-pill">$12.5M</div>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <a href="#" class="logo">GRID <span>MANAGER</span></a>
+        <div class="finance-badge">$12.5M (Cap: $140M)</div>
     </div>
 
-    <!-- Statistik Singkat -->
-    <div class="stats-row">
-        <div class="stat-card">
-            <div class="stat-num">#4</div>
-            <div class="stat-lbl">Konstruktor</div>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="team-status">
+            <div class="team-name">SCUDERIA GRID</div>
+            <div class="championship-pos">#4 KONSTRUKTOR</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-num">85</div>
-            <div class="stat-lbl">Total Poin</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-num">P7</div>
-            <div class="stat-lbl">Posisi Grid</div>
+
+        <!-- Quick Actions -->
+        <div class="action-grid">
+            <a href="race-hub.html" class="action-card" style="background: linear-gradient(135deg, #cc0000, #880000); border:none;">
+                <span class="card-icon">🚩</span>
+                <span class="card-title">RACE HUB</span>
+                <div class="card-desc">Monaco GP - 19:00 WIB</div>
+            </a>
+            <a href="garage.html" class="action-card">
+                <span class="card-icon">🔧</span>
+                <span class="card-title">GARASI</span>
+                <div class="card-desc">Setup & Strategi</div>
+            </a>
+            <a href="rnd.html" class="action-card">
+                <span class="card-icon">🧬</span>
+                <span class="card-title">R&D LAB</span>
+                <div class="card-desc">Upgrade Parts</div>
+            </a>
+            <a href="staff.html" class="action-card">
+                <span class="card-icon">👥</span>
+                <span class="card-title">STAFF & HR</span>
+                <div class="card-desc">Kontrak & Moral</div>
+            </a>
         </div>
     </div>
 
-    <!-- Menu Aksi Utama -->
-    <div class="quick-actions">
-        <a href="race-hub.html" class="action-btn primary">
-            <span class="btn-icon">🚩</span>
-            <span class="btn-title">RACE HUB</span>
-        </a>
-        <a href="garage.html" class="action-btn">
-            <span class="btn-icon">🔧</span>
-            <span class="btn-title">GARASI</span>
-        </a>
-        <a href="join-team.html" class="action-btn">
-            <span class="btn-icon">🤝</span>
-            <span class="btn-title">REKRUTMEN</span>
-        </a>
-        <a href="profile.html" class="action-btn">
-            <span class="btn-icon">⚙️</span>
-            <span class="btn-title">PROFIL</span>
-        </a>
+    <!-- Widget: R&D Status -->
+    <div class="widget-container">
+        <div class="w-header">STATUS PENGEMBANGAN</div>
+        <div class="rd-item">
+            <div class="rd-head"><span>Aerodinamika (Level 4)</span> <span>85%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width: 85%;"></div></div>
+        </div>
+        <div class="rd-item">
+            <div class="rd-head"><span>Mesin Power Unit (Level 2)</span> <span>40%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width: 40%; background:#ffd700;"></div></div>
+        </div>
     </div>
 
-    <!-- Widget Kondisi Mobil -->
-    <div class="widget">
-        <div class="w-title">KONDISI MESIN & PARTS</div>
-        <div class="car-health">
-            <div class="health-item">
-                <div class="h-info"><span>Mesin (ICE)</span> <span style="color:#00ff00">92%</span></div>
-                <div class="bar-bg"><div class="bar-fill" style="width: 92%; background: #00ff00;"></div></div>
+    <!-- Widget: Berita Terkini -->
+    <div class="widget-container" style="margin-bottom: 30px;">
+        <div class="w-header">BERITA PIT LANE</div>
+        <div class="news-feed">
+            <div class="news-item">
+                <div class="n-time">10 MENIT YANG LALU</div>
+                <div class="n-text">FIA merilis update regulasi sayap depan untuk musim depan.</div>
             </div>
-            <div class="health-item">
-                <div class="h-info"><span>Gearbox</span> <span style="color:#ffd700">78%</span></div>
-                <div class="bar-bg"><div class="bar-fill" style="width: 78%; background: #ffd700;"></div></div>
-            </div>
-            <div class="health-item">
-                <div class="h-info"><span>Aerodinamika</span> <span style="color:#0055ff">100%</span></div>
-                <div class="bar-bg"><div class="bar-fill" style="width: 100%; background: #0055ff;"></div></div>
+            <div class="news-item">
+                <div class="n-time">KEMARIN</div>
+                <div class="n-text">Sponsor utama "GridOil" memperpanjang kontrak hingga 2028.</div>
             </div>
         </div>
     </div>
 
-    <!-- Widget Berita Terkini -->
-    <div class="widget">
-        <div class="w-title">BERITA PIT LANE</div>
-        <div class="news-item">
-            <div class="n-date">HARI INI, 14:00</div>
-            <div class="n-text">FIA mengumumkan perubahan regulasi sayap depan untuk musim depan.</div>
-        </div>
-        <div class="news-item" style="border-left-color: #ff1801;">
-            <div class="n-date">KEMARIN, 09:30</div>
-            <div class="n-text">Partner tim kamu melaporkan adanya masalah vibrasi di sesi FP2.</div>
-        </div>
-    </div>
-
-    <!-- Footer Navigasi -->
+    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <a href="dashboard.html" class="nav-link active"><span class="nav-ico">🏠</span>Home</a>
         <a href="join-team.html" class="nav-link"><span class="nav-ico">🤝</span>Tim</a>
