@@ -4,277 +4,342 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Race Live - Grid Manager</title>
-    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0f0f0f;
-            --panel-bg: #161616;
-            --text-main: #e0e0e0;
-            --accent: #ff1801;
+            --red-bull: #0600EF; --mercedes: #00D2BE; --ferrari: #FF1801;
+            --mclaren: #FF8700; --aston: #006F62; --alpine: #0090FF;
+            --williams: #005AFF; --rb: #1634CB; --audi: #C3002F;
+            --haas: #B6BABD; --player: #FFD700;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Roboto Mono', monospace; /* Font monospaced agar angka rapi */
+            background-color: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Mencegah scroll body utama */
+            overflow: hidden; /* Prevent body scroll */
         }
 
-        /* --- HEADER (Sangat Tipis) --- */
+        /* --- HEADER --- */
         .race-header {
-            background: #000;
+            background: #1a1a1a;
             padding: 8px 15px;
+            border-bottom: 2px solid #ff1801;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--accent);
-            height: 50px;
+            flex-shrink: 0;
         }
-        .race-title { font-family: 'Racing Sans One'; font-size: 16px; color: white; }
-        .lap-counter { font-size: 14px; font-weight: bold; color: var(--accent); }
+        .race-info h1 { font-family: 'Racing Sans One'; font-size: 16px; color: white; line-height: 1; }
+        .race-info span { font-size: 10px; color: #888; }
+        .lap-box { text-align: right; }
+        .lap-count { font-family: 'Racing Sans One'; font-size: 20px; color: #fff; }
 
-        /* --- MAIN LAYOUT (Split View) --- */
-        .main-split {
+        /* --- SPLIT LAYOUT --- */
+        .sim-container {
             display: flex;
             flex: 1;
             overflow: hidden;
-            height: calc(100vh - 90px); /* Sisa tinggi dikurangi header & footer */
         }
 
-        /* --- KIRI: LIVE TIMING (Sempit) --- */
-        .timing-col {
-            width: 130px; /* Lebar tetap kecil */
-            background: var(--panel-bg);
+        /* LEFT: COMMENTARY (Scrollable) */
+        .comm-panel {
+            width: 40%;
+            background: #121212;
             border-right: 1px solid #333;
-            overflow-y: auto;
-            flex-shrink: 0;
-        }
-        
-        .t-row {
-            display: flex;
-            align-items: center;
-            padding: 6px 4px;
-            border-bottom: 1px solid #222;
-            font-size: 11px;
-        }
-        .t-row.player { background: rgba(255, 215, 0, 0.15); border-left: 3px solid gold; }
-        
-        .t-pos { width: 20px; text-align: center; color: #666; font-weight: bold; }
-        .t-info { flex: 1; padding-left: 5px; overflow: hidden; }
-        .t-name { color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
-        .t-gap { color: #888; font-size: 10px; }
-        .t-team-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
-
-        /* --- KANAN: COMMENTARY (Scrollable) --- */
-        .comm-col {
-            flex: 1;
-            background: #0a0a0a;
             display: flex;
             flex-direction: column;
-            position: relative;
         }
-        
-        .comm-header {
-            padding: 8px 15px;
+        .panel-title {
+            padding: 8px 10px;
             background: #1a1a1a;
+            font-weight: bold;
             font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #666;
+            color: #888;
             border-bottom: 1px solid #333;
+            text-transform: uppercase;
         }
-
         .comm-feed {
             flex: 1;
-            overflow-y: auto; /* Scroll hanya di area ini */
-            padding: 15px;
-            display: flex;
-            flex-direction: column-reverse; /* Item baru di bawah */
-        }
-
-        .c-item {
-            margin-bottom: 10px;
-            font-size: 12px;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 11px;
             line-height: 1.4;
-            color: #ccc;
-            border-left: 2px solid #333;
-            padding-left: 10px;
         }
-        .c-lap { color: var(--accent); font-weight: bold; margin-right: 5px; }
-        .c-flag { color: yellow; margin-right: 5px; }
+        .comm-item {
+            margin-bottom: 8px;
+            padding-left: 8px;
+            border-left: 2px solid #333;
+            animation: fadeIn 0.3s ease;
+        }
+        .comm-lap { color: #ff1801; font-weight: bold; margin-right: 4px; }
 
-        /* --- FOOTER CONTROLS --- */
-        .controls {
-            height: 40px;
-            background: #1a1a1a;
-            border-top: 1px solid #333;
+        /* RIGHT: TIMING (Scrollable) */
+        .timing-panel {
+            width: 60%;
+            background: #0f0f0f;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .timing-row {
             display: flex;
             align-items: center;
+            padding: 6px 10px;
+            border-bottom: 1px solid #222;
+            height: 36px;
+            transition: background 0.2s;
+        }
+        .timing-row.highlight { background: rgba(255, 215, 0, 0.15); border-left: 3px solid var(--player); }
+        
+        .t-pos { width: 25px; font-weight: bold; color: #666; font-size: 12px; }
+        .t-driver-info { flex: 1; display: flex; align-items: center; gap: 6px; overflow: hidden; }
+        .team-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .d-name { font-size: 12px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .t-gap { 
+            width: 60px; 
+            text-align: right; 
+            font-size: 11px; 
+            color: #aaa; 
+            font-family: monospace; 
+            font-weight: bold;
+        }
+
+        /* --- CONTROLS --- */
+        .controls-bar {
+            background: #1a1a1a;
+            padding: 10px;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
             justify-content: center;
-            gap: 15px;
+            flex-shrink: 0;
         }
         .btn {
-            background: #333; color: white; border: none;
-            padding: 5px 15px; border-radius: 4px; font-size: 11px; cursor: pointer;
-            font-family: 'Roboto Mono', monospace;
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 11px;
+            text-transform: uppercase;
         }
-        .btn-go { background: var(--accent); }
+        .btn-start { background: #00ff00; color: black; }
+        .btn-pause { background: #ff1801; color: white; }
+        .btn-menu { background: #333; color: white; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
 
     <!-- Header -->
     <div class="race-header">
-        <div class="race-title">CANADIAN GP 🇨🇦</div>
-        <div class="lap-counter">LAP <span id="lap-num">0</span>/70</div>
+        <div class="race-info">
+            <h1>CANADIAN GP 🇨🇦</h1>
+            <span>Gilles Villeneuve • Dry</span>
+        </div>
+        <div class="lap-box">
+            <div class="lap-count"><span id="lap-display">0</span>/70</div>
+        </div>
     </div>
 
-    <!-- Split Content -->
-    <div class="main-split">
-        
-        <!-- Kolom Kiri: Klasemen Sempit -->
-        <div class="timing-col" id="timing-list">
-            <!-- Diisi oleh JS -->
-        </div>
-
-        <!-- Kolom Kanan: Komentar -->
-        <div class="comm-col">
-            <div class="comm-header">Live Telemetry & Radio</div>
+    <!-- Main Content -->
+    <div class="sim-container">
+        <!-- Commentary -->
+        <div class="comm-panel">
+            <div class="panel-title">Live Feed</div>
             <div class="comm-feed" id="comm-feed">
-                <div class="c-item">Menunggu lampu start...</div>
+                <div class="comm-item">Ready for lights out...</div>
             </div>
         </div>
 
+        <!-- Timing -->
+        <div class="timing-panel">
+            <div class="panel-title">Standings</div>
+            <div id="timing-list">
+                <!-- Rows generated by JS -->
+            </div>
+        </div>
     </div>
 
     <!-- Controls -->
-    <div class="controls">
-        <button class="btn" onclick="window.location.href='calendar.html'">EXIT</button>
-        <button class="btn btn-go" id="toggle-btn" onclick="toggleSim()">START RACE</button>
+    <div class="controls-bar">
+        <button class="btn btn-menu" onclick="window.location.href='calendar.html'">Exit</button>
+        <button class="btn btn-start" id="action-btn" onclick="toggleRace()">Start Race</button>
     </div>
 
     <script>
-        // --- DATA ---
+        // --- DATA 2026 GRID ---
         const teams = [
-            { n: "Red Bull", c: "#0600EF" }, { n: "Mercedes", c: "#00D2BE" },
-            { n: "Ferrari", c: "#FF1801" }, { n: "McLaren", c: "#FF8700" },
-            { n: "Aston M.", c: "#006F62" }, { n: "Alpine", c: "#0090FF" },
-            { n: "Williams", c: "#005AFF" }, { n: "RB", c: "#1634CB" },
-            { n: "Sauber", c: "#52E252" }, { n: "Haas", c: "#B6BABD" },
-            { n: "GRID FC", c: "#FFD700" } // Tim Pemain
+            { name: "Red Bull", color: "var(--red-bull)" },
+            { name: "Mercedes", color: "var(--mercedes)" },
+            { name: "Ferrari", color: "var(--ferrari)" },
+            { name: "McLaren", color: "var(--mclaren)" },
+            { name: "Aston Martin", color: "var(--aston)" },
+            { name: "Alpine", color: "var(--alpine)" },
+            { name: "Williams", color: "var(--williams)" },
+            { name: "RB", color: "var(--rb)" },
+            { name: "Audi", color: "var(--audi)" }, // Sauber rebranded
+            { name: "Haas", color: "var(--haas)" },
+            { name: "Grid FC", color: "var(--player)" } // Player Team
         ];
 
+        // 22 Drivers
         let drivers = [
-            { p: 1, n: "Verstappen", t: 0, g: 0 }, { p: 2, n: "Perez", t: 0, g: 1.2 },
-            { p: 3, n: "Hamilton", t: 1, g: 3.5 }, { p: 4, n: "Russell", t: 1, g: 4.1 },
-            { p: 5, n: "Leclerc", t: 2, g: 6.8 }, { p: 6, n: "Sainz", t: 2, g: 7.2 },
-            { p: 7, n: "Norris", t: 3, g: 9.5 }, { p: 8, n: "Piastri", t: 3, g: 10.1 },
-            { p: 9, n: "Alonso", t: 4, g: 12.4 }, { p: 10, n: "Stroll", t: 4, g: 14.0 },
-            { p: 11, n: "Gasly", t: 5, g: 16.2 }, { p: 12, n: "Ocon", t: 5, g: 17.5 },
-            { p: 13, n: "Albon", t: 6, g: 20.1 }, { p: 14, n: "Colapinto", t: 6, g: 21.3 },
-            { p: 15, n: "Tsunoda", t: 7, g: 24.5 }, { p: 16, n: "Lawson", t: 7, g: 25.8 },
-            { p: 17, n: "Bottas", t: 8, g: 30.2 }, { p: 18, n: "Zhou", t: 8, g: 31.5 },
-            { p: 19, n: "Hulkenberg", t: 9, g: 35.0 }, { p: 20, n: "Bearman", t: 9, g: 36.2 },
+            { id: 1, name: "Verstappen", teamIdx: 0, pos: 1, gap: 0, status: "Track" },
+            { id: 2, name: "Hadjar", teamIdx: 0, pos: 2, gap: 1.2, status: "Track" },
+            { id: 3, name: "Antonelli", teamIdx: 1, pos: 3, gap: 3.5, status: "Track" },
+            { id: 4, name: "Russell", teamIdx: 1, pos: 4, gap: 4.1, status: "Track" },
+            { id: 5, name: "Leclerc", teamIdx: 2, pos: 5, gap: 5.8, status: "Track" },
+            { id: 6, name: "Hamilton", teamIdx: 2, pos: 6, gap: 6.2, status: "Track" },
+            { id: 7, name: "Norris", teamIdx: 3, pos: 7, gap: 8.5, status: "Track" },
+            { id: 8, name: "Piastri", teamIdx: 3, pos: 8, gap: 9.0, status: "Track" },
+            { id: 9, name: "Alonso", teamIdx: 4, pos: 9, gap: 12.1, status: "Track" },
+            { id: 10, name: "Stroll", teamIdx: 4, pos: 10, gap: 14.5, status: "Track" },
+            { id: 11, name: "Gasly", teamIdx: 5, pos: 11, gap: 16.2, status: "Track" },
+            { id: 12, name: "Doohan", teamIdx: 5, pos: 12, gap: 18.0, status: "Track" },
+            { id: 13, name: "Albon", teamIdx: 6, pos: 13, gap: 22.5, status: "Track" },
+            { id: 14, name: "Sargeant", teamIdx: 6, pos: 14, gap: 24.1, status: "Track" },
+            { id: 15, name: "Tsunoda", teamIdx: 7, pos: 15, gap: 28.9, status: "Track" },
+            { id: 16, name: "Lawson", teamIdx: 7, pos: 16, gap: 30.2, status: "Track" },
+            { id: 17, name: "Hulkenberg", teamIdx: 8, pos: 17, gap: 35.5, status: "Track" },
+            { id: 18, name: "Bortoleto", teamIdx: 8, pos: 18, gap: 38.1, status: "Track" },
+            { id: 19, name: "Bearman", teamIdx: 9, pos: 19, gap: 42.0, status: "Track" },
+            { id: 20, name: "Ocon", teamIdx: 9, pos: 20, gap: 43.5, status: "Track" },
             // PLAYER
-            { p: 12, n: "YOU", t: 10, g: 18.5 }, { p: 18, n: "Teammate", t: 10, g: 32.0 }
+            { id: 21, name: "YOU (Player)", teamIdx: 10, pos: 14, gap: 25.0, status: "Track" },
+            { id: 22, name: "Rookie", teamIdx: 10, pos: 18, gap: 39.0, status: "Track" }
         ];
 
-        let lap = 0;
-        let running = false;
-        let timer;
+        let currentLap = 0;
+        let isRunning = false;
+        let intervalId;
+        const totalLaps = 70;
 
         const feed = document.getElementById('comm-feed');
-        const tList = document.getElementById('timing-list');
-        const lapNum = document.getElementById('lap-num');
-        const btn = document.getElementById('toggle-btn');
+        const timingList = document.getElementById('timing-list');
+        const lapDisplay = document.getElementById('lap-display');
+        const actionBtn = document.getElementById('action-btn');
 
-        function render() {
-            // Sort by position
-            drivers.sort((a,b) => a.p - b.p);
-            
-            let html = '';
+        function renderTiming() {
+            timingList.innerHTML = '';
+            drivers.sort((a, b) => a.pos - b.pos);
+
             drivers.forEach(d => {
-                const isPlayer = d.t === 10;
-                const gapTxt = d.p === 1 ? "LEADER" : `+${d.g.toFixed(1)}s`;
+                const team = teams[d.teamIdx];
+                const isPlayer = d.teamIdx === 10;
                 
-                html += `
-                <div class="t-row ${isPlayer ? 'player' : ''}">
-                    <div class="t-pos">${d.p}</div>
-                    <div class="t-info">
-                        <span class="t-team-dot" style="background:${teams[d.t].c}"></span>
-                        <span class="t-name">${d.n}</span>
-                        <span class="t-gap">${gapTxt}</span>
+                let gapText = "LEADER";
+                if (d.pos > 1) {
+                    if (d.status === "PIT") gapText = "PIT";
+                    else gapText = `+${d.gap.toFixed(1)}s`;
+                }
+
+                const row = document.createElement('div');
+                row.className = `timing-row ${isPlayer ? 'highlight' : ''}`;
+                row.innerHTML = `
+                    <div class="t-pos">${d.pos}</div>
+                    <div class="t-driver-info">
+                        <div class="team-dot" style="background:${team.color}"></div>
+                        <div class="d-name">${d.name}</div>
                     </div>
-                </div>`;
+                    <div class="t-gap">${gapText}</div>
+                `;
+                timingList.appendChild(row);
             });
-            tList.innerHTML = html;
         }
 
-        function log(text, flag=false) {
+        function addCommentary(text) {
             const div = document.createElement('div');
-            div.className = 'c-item';
-            div.innerHTML = `<span class="c-lap">L${lap}</span> ${flag ? '<span class="c-flag">🚩</span>' : ''} ${text}`;
+            div.className = 'comm-item';
+            div.innerHTML = `<span class="comm-lap">L${currentLap}</span> ${text}`;
             feed.prepend(div);
-            if(feed.children.length > 30) feed.lastChild.remove();
+            if (feed.children.length > 30) feed.lastChild.remove();
         }
 
-        function update() {
-            if(lap >= 70) {
-                clearInterval(timer);
-                running = false;
-                btn.innerText = "FINISH";
-                log("BALAPAN SELESAI! 🏁", true);
+        function simulateLap() {
+            if (currentLap >= totalLaps) {
+                finishRace();
                 return;
             }
+            currentLap++;
+            lapDisplay.innerText = currentLap;
 
-            lap++;
-            lapNum.innerText = lap;
-
-            // Simulasi Perubahan Gap & Posisi
+            // Logic: Random Gap Changes
             drivers.forEach(d => {
-                // Acak perubahan gap
-                d.g += (Math.random() - 0.5) * 1.5;
-                if(d.g < 0.5 && d.p !== 1) d.g = 0.5;
+                if (d.status === "Track") {
+                    d.gap += (Math.random() - 0.5) * 1.5;
+                    if (d.gap < 0.5 && d.pos !== 1) d.gap = 0.5;
+                }
             });
 
-            // Simulasi Overtake (Acak swap posisi berdekatan)
-            if(Math.random() > 0.7) {
-                const idx = Math.floor(Math.random() * 20);
-                let d1 = drivers[idx];
-                let d2 = drivers[idx+1];
-                
-                // Logika swap sederhana
-                let tempP = d1.p; d1.p = d2.p; d2.p = tempP;
-                log(`${d2.n} menyalip ${d1.n}!`);
+            // Logic: Random Events
+            const rand = Math.random();
+            
+            // Pit Stop
+            if (rand > 0.92) {
+                const pitter = drivers[Math.floor(Math.random() * drivers.length)];
+                if (pitter.status === "Track") {
+                    pitter.status = "PIT";
+                    addCommentary(`${pitter.name} boxes for Hards! 🛠️`);
+                }
+            } else if (rand < 0.08) {
+                const pitter = drivers.find(d => d.status === "PIT");
+                if (pitter) {
+                    pitter.status = "Track";
+                    pitter.gap = 20.0 + Math.random() * 10;
+                    addCommentary(`${pitter.name} rejoins in P${Math.floor(Math.random()*5)+15}.`);
+                }
             }
 
-            // Event Random
-            if(Math.random() > 0.9) log("Sector 2 fastest by " + drivers[0].n);
-            if(Math.random() < 0.05) log("Yellow Flag Turn 4!", true);
+            // Overtake
+            if (rand > 0.6 && rand < 0.7) {
+                const idx = Math.floor(Math.random() * (drivers.length - 1));
+                const d1 = drivers[idx];
+                const d2 = drivers[idx+1];
+                if (d1.status === "Track" && d2.status === "Track") {
+                    let tempPos = d1.pos;
+                    d1.pos = d2.pos;
+                    d2.pos = tempPos;
+                    addCommentary(`<b>OVERTAKE!</b> ${d2.name} passes ${d1.name}!`);
+                }
+            }
 
-            render();
+            renderTiming();
         }
 
-        function toggleSim() {
-            if(running) {
-                clearInterval(timer);
-                running = false;
-                btn.innerText = "RESUME";
+        function toggleRace() {
+            if (isRunning) {
+                clearInterval(intervalId);
+                isRunning = false;
+                actionBtn.innerText = "RESUME";
+                actionBtn.className = "btn btn-start";
             } else {
-                if(lap===0) log("LIGHTS OUT! 🟢");
-                timer = setInterval(update, 1000); // Kecepatan simulasi
-                running = true;
-                btn.innerText = "PAUSE";
+                if (currentLap === 0) addCommentary("<b>LIGHTS OUT AND AWAY WE GO!</b> 🚩");
+                isRunning = true;
+                actionBtn.innerText = "PAUSE";
+                actionBtn.className = "btn btn-pause";
+                intervalId = setInterval(simulateLap, 1000); // Faster simulation
             }
         }
 
-        // Init
-        render();
+        function finishRace() {
+            clearInterval(intervalId);
+            isRunning = false;
+            actionBtn.innerText = "FINISHED";
+            actionBtn.disabled = true;
+            addCommentary("<b>CHECKERED FLAG! RACE OVER!</b> 🏁");
+        }
+
+        renderTiming();
     </script>
 </body>
 </html>
