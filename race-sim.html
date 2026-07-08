@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>F1 Live Timing Dashboard</title>
+    <title>Live Race Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -21,166 +21,176 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             font-family: 'Roboto', sans-serif;
-            min-height: 100dvh;
-            overflow-y: auto;
-            overflow-x: hidden;
+            height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         /* --- HEADER --- */
         .app-header {
             background: var(--bg-panel);
-            padding: 15px 20px;
+            padding: 12px 20px;
             border-bottom: 2px solid var(--accent);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 50;
+            flex-shrink: 0;
+            z-index: 10;
         }
-        .brand { font-family: 'Racing Sans One'; font-size: 20px; color: white; font-style: italic; }
+        .brand { font-family: 'Racing Sans One'; font-size: 18px; color: white; font-style: italic; }
         .brand span { color: var(--accent); }
-        .track-info { text-align: right; font-size: 11px; color: #888; line-height: 1.2; }
-        .track-info b { color: white; font-size: 12px; }
+        .race-timer { 
+            font-family: monospace; 
+            font-size: 16px; 
+            color: var(--accent); 
+            font-weight: bold;
+            background: #222;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
 
-        /* --- MAIN LAYOUT --- */
-        .main-container {
+        /* --- MAIN GRID --- */
+        .main-grid {
+            display: flex;
             flex: 1;
+            overflow: hidden;
+        }
+
+        /* LEFT: NARROW CLASSIFICATION */
+        .timing-section {
+            width: 160px; /* Sangat sempit sesuai request */
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding-bottom: calc(140px + var(--safe-bottom));
-        }
-
-        @media (min-width: 769px) {
-            .main-container {
-                flex-direction: row;
-                height: calc(100dvh - 60px - 140px - var(--safe-bottom));
-                padding-bottom: 0;
-            }
-        }
-
-        /* --- LEFT: COMPACT TIMING --- */
-        .timing-section {
-            background: var(--bg-panel);
-            width: 100%;
             flex-shrink: 0;
         }
-        
-        @media (min-width: 769px) {
-            .timing-section {
-                width: 320px;
-                height: 100%;
-                border-right: 1px solid var(--border);
-            }
-        }
-
         .panel-head {
-            padding: 10px 15px;
+            padding: 8px 10px;
             background: #222;
-            font-size: 11px;
+            font-size: 9px;
             font-weight: bold;
             text-transform: uppercase;
             color: var(--accent);
             border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
+            letter-spacing: 1px;
         }
-
+        .timing-list { 
+            flex: 1; 
+            overflow-y: auto; 
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+        }
+        
         .t-row {
-            display: grid;
-            grid-template-columns: 30px 40px 1fr 35px 60px;
+            display: flex;
             align-items: center;
-            padding: 10px 15px;
+            padding: 8px 6px;
             border-bottom: 1px solid #222;
-            font-size: 14px;
-            gap: 8px;
+            font-size: 11px;
         }
-        .t-row.player { background: rgba(255, 215, 0, 0.08); border-left: 3px solid gold; }
+        .t-row.player { background: rgba(255, 215, 0, 0.1); border-left: 2px solid gold; }
         
-        .t-pos { font-weight: bold; color: #666; font-size: 14px; }
-        .t-team-logo { 
-            width: 32px; height: 32px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 10px; color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        .t-pos { width: 18px; font-weight: bold; color: #666; font-size: 10px; text-align: center; }
+        .t-info { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+        
+        .d-name-short { 
+            font-weight: 700; 
+            color: white; 
+            font-size: 11px; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
         }
-        .t-driver { font-weight: 600; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         
-        .tire-badge {
-            width: 28px; height: 28px; border-radius: 4px;
-            font-size: 12px; font-weight: bold;
+        .team-tyre-row { display: flex; align-items: center; gap: 4px; }
+        .team-dot { width: 3px; height: 10px; border-radius: 1px; flex-shrink: 0; }
+        
+        .tyre-badge {
+            width: 14px; height: 14px;
+            border-radius: 3px;
+            font-size: 7px;
+            font-weight: bold;
             display: flex; align-items: center; justify-content: center;
             color: black; flex-shrink: 0;
         }
-        .tire-S { background: #ff1801; color: white; }
-        .tire-M { background: #ffe600; }
-        .tire-H { background: #ffffff; }
-        .tire-I { background: #00ff00; }
-        .tire-W { background: #0055ff; color: white; }
+        .tyre-S { background: #ff1801; color: white; }
+        .tyre-M { background: #ffe600; }
+        .tyre-H { background: #ffffff; }
+        .tyre-I { background: #00ff00; }
+        .tyre-W { background: #0055ff; color: white; }
 
         .t-gap { 
             font-family: monospace; 
-            font-size: 13px; 
-            color: #aaa; 
+            font-size: 9px; 
+            color: #888; 
             text-align: right;
-            font-weight: 500;
+            min-width: 35px;
+            white-space: nowrap;
         }
 
-        /* --- RIGHT: COMMENTARY --- */
+        /* RIGHT: WIDE COMMENTARY */
         .comm-section {
             flex: 1;
+            display: flex;
+            flex-direction: column;
             background: #121212;
-            min-height: 400px;
         }
         .comm-feed {
+            flex: 1;
+            overflow-y: auto;
             padding: 15px;
             display: flex;
             flex-direction: column-reverse;
         }
         .c-item {
-            margin-bottom: 12px;
-            padding: 12px;
+            margin-bottom: 10px;
+            padding: 10px;
             background: #1a1a1a;
-            border-radius: 8px;
+            border-radius: 6px;
             border-left: 3px solid #333;
             font-size: 13px;
             line-height: 1.4;
+            animation: slideIn 0.3s ease;
         }
         .c-item.strat { border-left-color: #00d2be; background: rgba(0, 210, 190, 0.1); }
-        .c-item.danger { border-left-color: var(--accent); color: #ffaaaa; }
-        .c-lap { font-weight: bold; color: #666; font-size: 10px; margin-right: 8px; display: inline-block; width: 25px;}
+        .c-item.danger { border-left-color: red; color: #ffaaaa; }
+        .c-lap { font-weight: bold; color: #666; font-size: 10px; margin-right: 6px; }
 
-        /* --- DASHBOARD FOOTER --- */
-        .dashboard-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #1a1a1a;
+        /* --- FOOTER NAVIGATION --- */
+        .nav-footer {
+            height: 60px;
+            background: var(--bg-panel);
             border-top: 1px solid var(--border);
-            padding: 15px 20px;
-            padding-bottom: calc(15px + var(--safe-bottom)); 
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-shrink: 0;
+            padding-bottom: var(--safe-bottom);
             z-index: 100;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
         }
-
-        .dash-item {
+        .nav-btn {
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 4px;
+            color: #666;
+            text-decoration: none;
+            font-size: 10px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .dash-label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
-        .dash-value { font-family: 'Racing Sans One'; font-size: 22px; color: white; font-style: italic; }
-        .dash-sub { font-size: 11px; color: #aaa; }
+        .nav-btn.active { color: var(--accent); }
+        .nav-icon { font-size: 20px; }
 
-        @media (max-width: 400px) {
-            .dashboard-footer { grid-template-columns: repeat(2, 1fr); }
-            .dash-value { font-size: 18px; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .timing-section { width: 130px; }
+            .d-name-short { font-size: 10px; }
+            .t-gap { font-size: 8px; min-width: 30px; }
         }
     </style>
 </head>
@@ -189,106 +199,90 @@
     <!-- Header -->
     <div class="app-header">
         <div class="brand">GRID <span>LIVE</span></div>
-        <div class="track-info">
-            <div>Circuit: <b>Monza 🇮🇹</b></div>
-            <div>Weather: <b>Sunny (28°C)</b></div>
-        </div>
+        <div class="race-timer" id="race-timer">10:00</div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-container">
+    <!-- Main Grid -->
+    <div class="main-grid">
         
-        <!-- Compact Timing Left -->
+        <!-- Left: Narrow Classification -->
         <div class="timing-section">
-            <div class="panel-head">
-                <span>Live Classification</span>
-                <span id="gap-mode-label">GAP TO LEADER</span>
-            </div>
+            <div class="panel-head">Posisi</div>
             <div class="timing-list" id="timing-list"></div>
         </div>
 
-        <!-- Commentary Right/Bottom -->
+        <!-- Right: Wide Commentary -->
         <div class="comm-section">
             <div class="panel-head">Race Control & Engineer Radio</div>
             <div class="comm-feed" id="feed">
-                <div class="c-item">Mobil berada di grid. Strategi awal: Start Medium.</div>
+                <div class="c-item">Sistem siap. Balapan akan dimulai secara otomatis.</div>
             </div>
         </div>
-
     </div>
 
-    <!-- Dashboard Footer -->
-    <div class="dashboard-footer">
-        <div class="dash-item">
-            <div class="dash-label">Session Time</div>
-            <div class="dash-value" id="session-time">10:00</div>
-            <div class="dash-sub">Remaining</div>
-        </div>
-        <div class="dash-item">
-            <div class="dash-label">Current Lap</div>
-            <div class="dash-value"><span id="lap-num">0</span><span style="font-size:14px; color:#666">/53</span></div>
-            <div class="dash-sub">Total Laps</div>
-        </div>
-        <div class="dash-item">
-            <div class="dash-label">Fastest Lap</div>
-            <div class="dash-value" id="fastest-lap">--:--</div>
-            <div class="dash-sub" id="fastest-driver">Waiting...</div>
-        </div>
-        <div class="dash-item">
-            <div class="dash-label">Track Status</div>
-            <div class="dash-value" style="color: #00ff00;">GREEN</div>
-            <div class="dash-sub">All Clear</div>
-        </div>
+    <!-- Footer Navigation -->
+    <div class="nav-footer">
+        <a class="nav-btn" onclick="alert('Kembali ke Dashboard')">
+            <span class="nav-icon">🏠</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="nav-btn active">
+            <span class="nav-icon"></span>
+            <span>Live Race</span>
+        </a>
+        <a class="nav-btn" onclick="alert('Membuka Halaman Tim')">
+            <span class="nav-icon">👥</span>
+            <span>Tim Saya</span>
+        </a>
+        <a class="nav-btn" onclick="alert('Membuka Pengaturan')">
+            <span class="nav-icon">⚙️</span>
+            <span>Pengaturan</span>
+        </a>
     </div>
 
     <script>
         // --- DATA ---
         const teams = [
-            { n: "Red Bull", c: "#0600EF", abbr: "RBR" }, 
-            { n: "Mercedes", c: "#00D2BE", abbr: "MER" },
-            { n: "Ferrari", c: "#FF1801", abbr: "FER" }, 
-            { n: "McLaren", c: "#FF8700", abbr: "MCL" },
-            { n: "Aston Martin", c: "#006F62", abbr: "AMR" }, 
-            { n: "Alpine", c: "#0090FF", abbr: "ALP" },
-            { n: "Williams", c: "#005AFF", abbr: "WIL" }, 
-            { n: "RB", c: "#1634CB", abbr: "RB" },
-            { n: "Sauber", c: "#000000", abbr: "SAU" }, 
-            { n: "Haas", c: "#B6BABD", abbr: "HAA" },
-            { n: "Grid FC", c: "#FFD700", abbr: "GFC" }
+            { n: "Red Bull", c: "#0600EF" }, { n: "Mercedes", c: "#00D2BE" },
+            { n: "Ferrari", c: "#FF1801" }, { n: "McLaren", c: "#FF8700" },
+            { n: "Aston Martin", c: "#006F62" }, { n: "Alpine", c: "#0090FF" },
+            { n: "Williams", c: "#005AFF" }, { n: "RB", c: "#1634CB" },
+            { n: "Sauber", c: "#000000" }, { n: "Haas", c: "#B6BABD" },
+            { n: "Grid FC", c: "#FFD700" }
         ];
 
         let drivers = [];
         let lap = 0;
         let timer;
-        let sessionSeconds = 600; // 10 minutes
-        let gapMode = "leader"; // "leader" or "interval"
-        let fastestTime = Infinity;
-        let fastestDriverName = "";
+        let timeLeft = 600; // 10 menit dalam detik
+        let showGapToLeader = true; // Toggle untuk gap/interval
+        let toggleTimer;
 
         function initDrivers() {
             drivers = [
-                { n: "VER", t: 0, p: 1, g: 0, tire: "M", status: "Track" },
-                { n: "PER", t: 0, p: 2, g: 2.1, tire: "M", status: "Track" },
-                { n: "HAM", t: 1, p: 3, g: 5.4, tire: "H", status: "Track" },
-                { n: "RUS", t: 1, p: 4, g: 6.2, tire: "H", status: "Track" },
-                { n: "LEC", t: 2, p: 5, g: 8.5, tire: "S", status: "Track" },
-                { n: "SAI", t: 2, p: 6, g: 9.1, tire: "S", status: "Track" },
-                { n: "NOR", t: 3, p: 7, g: 12.3, tire: "M", status: "Track" },
-                { n: "PIA", t: 3, p: 8, g: 13.0, tire: "M", status: "Track" },
-                { n: "ALO", t: 4, p: 9, g: 15.5, tire: "H", status: "Track" },
-                { n: "STR", t: 4, p: 10, g: 18.2, tire: "H", status: "Track" },
-                { n: "YOU", t: 10, p: 11, g: 19.5, tire: "M", status: "Track", isP: true }, 
-                { n: "GAS", t: 5, p: 12, g: 20.1, tire: "M", status: "Track" },
-                { n: "OCO", t: 5, p: 13, g: 21.5, tire: "M", status: "Track" },
-                { n: "ALB", t: 6, p: 14, g: 25.0, tire: "H", status: "Track" },
-                { n: "TEA", t: 10, p: 15, g: 26.4, tire: "S", status: "Track" },
-                { n: "TSU", t: 7, p: 16, g: 28.9, tire: "M", status: "Track" },
-                { n: "RIC", t: 7, p: 17, g: 30.1, tire: "M", status: "Track" },
-                { n: "BOT", t: 8, p: 18, g: 35.2, tire: "H", status: "Track" },
-                { n: "ZHO", t: 8, p: 19, g: 36.5, tire: "H", status: "Track" },
-                { n: "HUL", t: 9, p: 20, g: 40.0, tire: "M", status: "Track" },
-                { n: "MAG", t: 9, p: 21, g: 41.2, tire: "M", status: "Track" },
-                { n: "COL", t: 6, p: 22, g: 45.0, tire: "S", status: "Track" }
+                { n: "Verstappen", short: "VER", t: 0, p: 1, g: 0, tyre: "M", status: "Track" },
+                { n: "Perez", short: "PER", t: 0, p: 2, g: 2.1, tyre: "M", status: "Track" },
+                { n: "Hamilton", short: "HAM", t: 1, p: 3, g: 5.4, tyre: "H", status: "Track" },
+                { n: "Russell", short: "RUS", t: 1, p: 4, g: 6.2, tyre: "H", status: "Track" },
+                { n: "Leclerc", short: "LEC", t: 2, p: 5, g: 8.5, tyre: "S", status: "Track" },
+                { n: "Sainz", short: "SAI", t: 2, p: 6, g: 9.1, tyre: "S", status: "Track" },
+                { n: "Norris", short: "NOR", t: 3, p: 7, g: 12.3, tyre: "M", status: "Track" },
+                { n: "Piastri", short: "PIA", t: 3, p: 8, g: 13.0, tyre: "M", status: "Track" },
+                { n: "Alonso", short: "ALO", t: 4, p: 9, g: 15.5, tyre: "H", status: "Track" },
+                { n: "Stroll", short: "STR", t: 4, p: 10, g: 18.2, tyre: "H", status: "Track" },
+                // PLAYER
+                { n: "Andi Pratama", short: "PRA", t: 10, p: 11, g: 19.5, tyre: "S", status: "Track", isP: true }, 
+                { n: "Gasly", short: "GAS", t: 5, p: 12, g: 20.1, tyre: "M", status: "Track" },
+                { n: "Ocon", short: "OCO", t: 5, p: 13, g: 21.5, tyre: "M", status: "Track" },
+                { n: "Albon", short: "ALB", t: 6, p: 14, g: 25.0, tyre: "H", status: "Track" },
+                { n: "Teammate", short: "TEA", t: 10, p: 15, g: 26.4, tyre: "S", status: "Track" },
+                { n: "Tsunoda", short: "TSU", t: 7, p: 16, g: 28.9, tyre: "M", status: "Track" },
+                { n: "Ricciardo", short: "RIC", t: 7, p: 17, g: 30.1, tyre: "M", status: "Track" },
+                { n: "Bottas", short: "BOT", t: 8, p: 18, g: 35.2, tyre: "H", status: "Track" },
+                { n: "Zhou", short: "ZHO", t: 8, p: 19, g: 36.5, tyre: "H", status: "Track" },
+                { n: "Hulkenberg", short: "HUL", t: 9, p: 20, g: 40.0, tyre: "M", status: "Track" },
+                { n: "Magnussen", short: "MAG", t: 9, p: 21, g: 41.2, tyre: "M", status: "Track" },
+                { n: "Colapinto", short: "COL", t: 6, p: 22, g: 45.0, tyre: "H", status: "Track" }
             ];
         }
 
@@ -301,16 +295,21 @@
             drivers.forEach(d => {
                 const team = teams[d.t];
                 
+                // Logika Bergantian Gap / Interval
                 let gapText = "";
                 if (d.p === 1) {
                     gapText = "LEADER";
-                } else if (gapMode === "leader") {
+                } else if (showGapToLeader) {
                     gapText = `+${d.g.toFixed(1)}s`;
                 } else {
-                    // Interval mode: gap to car ahead
-                    const carAhead = drivers.find(c => c.p === d.p - 1);
-                    const interval = carAhead ? (d.g - carAhead.g).toFixed(1) : "+0.0";
-                    gapText = `+${interval}s`;
+                    // Cari driver di posisi sebelumnya untuk interval
+                    const prevDriver = drivers.find(x => x.p === d.p - 1);
+                    if (prevDriver) {
+                        const interval = d.g - prevDriver.g;
+                        gapText = `+${interval.toFixed(1)}s`;
+                    } else {
+                        gapText = `+${d.g.toFixed(1)}s`;
+                    }
                 }
 
                 const row = document.createElement('div');
@@ -318,9 +317,13 @@
                 
                 row.innerHTML = `
                     <div class="t-pos">${d.p}</div>
-                    <div class="t-team-logo" style="background:${team.c}">${team.abbr}</div>
-                    <div class="t-driver">${d.n}</div>
-                    <div class="tire-badge tire-${d.tire}">${d.tire}</div>
+                    <div class="t-info">
+                        <div class="d-name-short">${d.short}</div>
+                        <div class="team-tyre-row">
+                            <div class="team-dot" style="background:${team.c}"></div>
+                            <div class="tyre-badge tyre-${d.tyre}">${d.tyre}</div>
+                        </div>
+                    </div>
                     <div class="t-gap">${gapText}</div>
                 `;
                 list.appendChild(row);
@@ -335,57 +338,35 @@
             feed.prepend(div);
         }
 
-        function updateSessionTimer() {
-            if (sessionSeconds <= 0) {
-                clearInterval(timer);
-                addLog(" CHECKERED FLAG! Balapan Selesai.", "strat");
-                document.querySelector('.dash-value').innerText = "00:00";
-                return;
-            }
-            
-            sessionSeconds--;
-            const mins = Math.floor(sessionSeconds / 60).toString().padStart(2, '0');
-            const secs = (sessionSeconds % 60).toString().padStart(2, '0');
-            document.getElementById('session-time').innerText = `${mins}:${secs}`;
-        }
-
-        function toggleGapMode() {
-            gapMode = gapMode === "leader" ? "interval" : "leader";
-            document.getElementById('gap-mode-label').innerText = 
-                gapMode === "leader" ? "GAP TO LEADER" : "INTERVAL GAP";
-            renderTiming();
-        }
-
         // --- SIMULATION LOGIC ---
         function simulateLap() {
-            if(lap >= 53 || sessionSeconds <= 0) { 
-                if(sessionSeconds > 0) finishRace(); 
-                return; 
-            }
+            if(timeLeft <= 0) { finishRace(); return; }
             
+            // Simulasi 1 lap per detik (dipercepat agar pas 10 menit)
             lap++;
-            document.getElementById('lap-num').innerText = lap;
-
+            
             drivers.forEach(d => {
                 if(d.status === "Track") {
-                    let change = (Math.random() - 0.5) * 1.5;
-                    d.g += change;
+                    d.g += (Math.random() - 0.5) * 1.5;
                     if(d.g < 0.5 && d.p !== 1) d.g = 0.5;
-
-                    // Simulate fastest lap tracking
-                    const currentLapTime = 85 + (Math.random() * 3); // Base ~85s
-                    if(currentLapTime < fastestTime) {
-                        fastestTime = currentLapTime;
-                        fastestDriverName = d.n;
-                        const m = Math.floor(fastestTime / 60);
-                        const s = (fastestTime % 60).toFixed(3);
-                        document.getElementById('fastest-lap').innerText = `${m}:${s.toFixed(3)}`;
-                        document.getElementById('fastest-driver').innerText = d.n;
+                    
+                    // Random Pit Stop
+                    if(Math.random() > 0.98) {
+                        d.status = "PIT";
+                        d.tyre = "M";
+                        addLog(`${d.n} masuk pit untuk ganti ban Medium!`, "strat");
+                        setTimeout(() => {
+                            if(d.status === "PIT") {
+                                d.status = "Track";
+                                d.g += 20;
+                                addLog(`${d.n} keluar dari pit lane.`, "strat");
+                            }
+                        }, 3000);
                     }
                 }
             });
 
-            // Random Overtakes
+            // Random Overtake
             if(Math.random() > 0.7) {
                 const idx = Math.floor(Math.random() * (drivers.length - 1));
                 const d1 = drivers[idx];
@@ -399,28 +380,46 @@
             renderTiming();
         }
 
+        function updateTimer() {
+            timeLeft--;
+            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('race-timer').innerText = `${m}:${s}`;
+            
+            if(timeLeft <= 0) finishRace();
+        }
+
+        function toggleGapDisplay() {
+            showGapToLeader = !showGapToLeader;
+            renderTiming();
+        }
+
         function finishRace() {
             clearInterval(timer);
-            addLog(" CHECKERED FLAG! Balapan Selesai.", "strat");
+            clearInterval(toggleTimer);
+            addLog("🏁 CHECKERED FLAG! Balapan Selesai.", "danger");
+            document.getElementById('race-timer').innerText = "FINISH";
         }
 
         function startAutoRace() {
-            // Auto start immediately
+            addLog(" LIGHTS OUT! BALAPAN DIMULAI!", "danger");
+            
+            // Timer balapan utama (update tiap detik)
             timer = setInterval(() => {
                 simulateLap();
-                updateSessionTimer();
+                updateTimer();
             }, 1000);
 
-            // Toggle gap mode every 8 seconds
-            setInterval(toggleGapMode, 8000);
-            
-            addLog("🚩 LIGHTS OUT! BALAPAN DIMULAI!", "danger");
+            // Timer toggle gap/interval (tiap 60 detik)
+            toggleTimer = setInterval(toggleGapDisplay, 60000);
         }
 
         // Init
         initDrivers();
         renderTiming();
-        startAutoRace();
+        
+        // Auto start setelah 3 detik countdown
+        setTimeout(startAutoRace, 3000);
 
     </script>
 </body>
