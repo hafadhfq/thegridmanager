@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Race Dynamic Timer</title>
+    <title>Race Lap Timer</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -30,7 +30,7 @@
         /* --- HEADER --- */
         .app-header {
             background: var(--bg-panel);
-            padding: 12px 15px;
+            padding: 10px 15px;
             border-bottom: 2px solid var(--accent);
             display: flex;
             justify-content: space-between;
@@ -40,8 +40,7 @@
         }
         .brand { font-family: 'Racing Sans One'; font-size: 18px; color: white; font-style: italic; }
         .brand span { color: var(--accent); }
-        .race-info { text-align: right; font-size: 11px; line-height: 1.3; }
-        .race-clock { 
+        .race-timer { 
             font-family: monospace; 
             font-size: 14px; 
             color: #fff; 
@@ -49,9 +48,24 @@
             padding: 4px 8px; 
             border-radius: 4px; 
             border: 1px solid #333;
-            display: inline-block;
-            margin-top: 2px;
         }
+
+        /* --- CIRCUIT INFO BAR --- */
+        .circuit-info-bar {
+            background: #222;
+            padding: 8px 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #aaa;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .info-item { display: flex; align-items: center; gap: 4px; }
+        .info-item b { color: white; font-weight: 500; }
 
         /* --- MAIN SPLIT LAYOUT --- */
         .main-split {
@@ -63,7 +77,7 @@
         /* LEFT: COMPACT TIMING TABLE */
         .timing-col {
             width: 35%;
-            min-width: 260px;
+            min-width: 280px;
             background: var(--bg-panel);
             border-right: 1px solid var(--border);
             display: flex;
@@ -80,35 +94,25 @@
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
-            align-items: center;
         }
-        .gap-toggle { 
-            color: #888; 
-            font-weight: normal; 
-            font-size: 9px;
-            transition: color 0.3s;
-        }
+        .gap-toggle { color: #888; font-weight: normal; cursor: pointer; transition: 0.3s; }
         .gap-toggle.active { color: #00d2be; }
         
-        .timing-list {
-            flex: 1;
-            overflow-y: auto;
-            padding-bottom: 20px;
-        }
+        .timing-list { flex: 1; overflow-y: auto; padding-bottom: 20px; }
         
         .t-row {
             display: grid;
-            grid-template-columns: 22px 1fr 28px 50px;
+            grid-template-columns: 25px 1fr 30px 55px;
             align-items: center;
-            padding: 7px 10px;
+            padding: 8px 10px;
             border-bottom: 1px solid #222;
             font-size: 12px;
         }
         .t-row.player { background: rgba(255, 215, 0, 0.08); }
         
-        .t-pos { font-weight: bold; color: #666; font-size: 12px; }
-        .t-driver { display: flex; align-items: center; gap: 5px; overflow: hidden; }
-        .team-stripe { width: 3px; height: 12px; border-radius: 1px; flex-shrink: 0; }
+        .t-pos { font-weight: bold; color: #666; font-size: 13px; }
+        .t-driver { display: flex; align-items: center; gap: 6px; overflow: hidden; }
+        .team-stripe { width: 3px; height: 14px; border-radius: 1px; flex-shrink: 0; }
         .d-code { font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .tyre-badge {
@@ -185,7 +189,9 @@
 
         @media (max-width: 480px) {
             .timing-col { width: 40%; min-width: unset; }
-            .t-row { grid-template-columns: 20px 1fr 24px 42px; padding: 6px 8px; font-size: 11px; }
+            .t-row { grid-template-columns: 20px 1fr 25px 45px; padding: 6px 8px; font-size: 11px; }
+            .d-code { font-size: 12px; }
+            .circuit-info-bar { font-size: 10px; padding: 6px 10px; }
         }
     </style>
 </head>
@@ -194,10 +200,15 @@
     <!-- Header -->
     <div class="app-header">
         <div class="brand">GRID <span>LIVE</span></div>
-        <div class="race-info">
-            <div style="color:#888">TARGET: 10 MINUTES</div>
-            <div class="race-clock" id="race-clock">10:00</div>
-        </div>
+        <div class="race-timer" id="race-clock">START 5s</div>
+    </div>
+
+    <!-- Circuit Info Bar -->
+    <div class="circuit-info-bar">
+        <div class="info-item"> <b>Circuit Gilles Villeneuve</b> 🇨🇦</div>
+        <div class="info-item">☀️ <b>Sunny</b></div>
+        <div class="info-item">🌡️ Track: <b>32°C</b></div>
+        <div class="info-item">💨 Wind: <b>12 km/h NE</b></div>
     </div>
 
     <!-- Main Split Content -->
@@ -216,7 +227,7 @@
         <div class="comm-col">
             <div class="col-head">Live Commentary</div>
             <div class="comm-feed" id="feed">
-                <div class="c-item">Sistem siap. Balapan akan dimulai otomatis.</div>
+                <div class="c-item">Formasi grid sedang dipersiapkan...</div>
             </div>
         </div>
 
@@ -233,7 +244,7 @@
             <span>Stats</span>
         </a>
         <a href="#" class="nav-item">
-            <span class="nav-icon">️</span>
+            <span class="nav-icon">⚙️</span>
             <span>Settings</span>
         </a>
     </div>
@@ -248,9 +259,6 @@
             { n: "Sauber", c: "#000000" }, { n: "Haas", c: "#B6BABD" },
             { n: "Grid FC", c: "#FFD700" }
         ];
-
-        const TOTAL_LAPS = 53;
-        const TOTAL_TIME_SECONDS = 600; // 10 minutes exactly
 
         let drivers = [
             { code: "VER", full: "Max Verstappen", t: 0, p: 1, g: 0, tyre: "M", status: "Track" },
@@ -277,11 +285,15 @@
             { code: "COL", full: "Franco Colapinto", t: 6, p: 22, g: 45.0, tyre: "S", status: "Track" }
         ];
 
-        let currentLap = 0;
-        let raceTimeLeft = TOTAL_TIME_SECONDS;
+        // CONFIGURATION
+        const TOTAL_LAPS = 70;
+        const SECONDS_PER_LAP = 5;
+        const TOTAL_RACE_TIME = TOTAL_LAPS * SECONDS_PER_LAP; // 350 seconds
+
+        let lap = 0;
+        let timeLeft = TOTAL_RACE_TIME;
+        let timer;
         let showGapToLeader = true;
-        let mainTimer;
-        let simTimer;
 
         // --- RENDER FUNCTIONS ---
         function renderTiming() {
@@ -291,8 +303,8 @@
 
             drivers.forEach(d => {
                 const team = TEAMS[d.t];
-                let infoText = "";
                 
+                let infoText = "";
                 if (showGapToLeader) {
                     infoText = d.p === 1 ? "LEADER" : `+${d.g.toFixed(1)}s`;
                 } else {
@@ -327,22 +339,22 @@
             const feed = document.getElementById('feed');
             const div = document.createElement('div');
             div.className = `c-item ${type}`;
-            div.innerHTML = `<span class="c-lap">L${currentLap}</span> ${text}`;
+            div.innerHTML = `<span class="c-lap">L${lap}</span> ${text}`;
             feed.prepend(div);
         }
 
-        // --- DYNAMIC LAP SIMULATION ---
+        // --- SIMULATION LOGIC ---
         function simulateLap() {
-            currentLap++;
+            if (lap >= TOTAL_LAPS) return;
             
-            // Update Gaps & Tyres
+            lap++;
+            
             drivers.forEach(d => {
                 if(d.status === "Track") {
                     d.g += (Math.random() - 0.5) * 1.5;
                     if(d.g < 0.5 && d.p !== 1) d.g = 0.5;
                     
-                    // Random Pit Stop
-                    if(Math.random() > 0.97) {
+                    if(Math.random() > 0.98) {
                         d.status = "PIT";
                         d.tyre = "M";
                         addLog(`${d.full} masuk pit untuk ganti ban Medium.`, "strat");
@@ -353,7 +365,6 @@
                 }
             });
 
-            // Random Overtake
             if(Math.random() > 0.7) {
                 const idx = Math.floor(Math.random() * (drivers.length - 1));
                 const d1 = drivers[idx];
@@ -367,15 +378,15 @@
             renderTiming();
         }
 
-        function updateClockAndLogic() {
-            raceTimeLeft--;
-            const mins = Math.floor(raceTimeLeft / 60);
-            const secs = raceTimeLeft % 60;
+        function updateClock() {
+            timeLeft--;
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
             document.getElementById('race-clock').innerText = 
                 `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
             // Toggle Gap/Interval every 60 seconds
-            if (raceTimeLeft % 60 === 0 && raceTimeLeft > 0) {
+            if (timeLeft % 60 === 0 && timeLeft > 0) {
                 showGapToLeader = !showGapToLeader;
                 const label = document.getElementById('gap-label');
                 label.innerText = showGapToLeader ? "GAP TO LEADER" : "INTERVAL";
@@ -383,49 +394,28 @@
                 renderTiming();
             }
 
-            // End Race
-            if (raceTimeLeft <= 0) {
-                clearInterval(mainTimer);
-                clearInterval(simTimer);
+            if (timeLeft <= 0) {
+                clearInterval(timer);
                 addLog("🏁 CHECKERED FLAG! Balapan Selesai.", "danger");
                 document.getElementById('race-clock').innerText = "FINISHED";
                 document.getElementById('race-clock').style.color = "#ff1801";
-                return;
-            }
-
-            // Calculate Dynamic Lap Duration
-            // Rumus: Sisa Waktu / Sisa Lap = Durasi Lap Berikutnya
-            const lapsRemaining = TOTAL_LAPS - currentLap;
-            let nextLapDuration = 1000; // Default 1 second tick
-            
-            if (lapsRemaining > 0) {
-                // Kita bagi sisa waktu (dalam ms) dengan sisa lap
-                // Ditambah sedikit variasi acak agar tidak terlalu robotik
-                const baseDuration = (raceTimeLeft * 1000) / lapsRemaining;
-                const variation = (Math.random() - 0.5) * (baseDuration * 0.1); // +/- 5% variasi
-                nextLapDuration = Math.max(1000, baseDuration + variation);
-            }
-
-            // Restart simulation timer with new dynamic duration
-            clearInterval(simTimer);
-            if (currentLap < TOTAL_LAPS) {
-                simTimer = setInterval(simulateLap, nextLapDuration);
+            } else if (timeLeft === TOTAL_RACE_TIME - 5) {
+                 timer = setInterval(simulateLap, SECONDS_PER_LAP * 1000);
+                 addLog("🚩 LIGHTS OUT! BALAPAN DIMULAI!", "danger");
             }
         }
 
         // --- INIT ---
         renderTiming();
         
-        // Auto Start Sequence
         let startCount = 5;
         const startIntv = setInterval(() => {
             document.getElementById('race-clock').innerText = `START ${startCount}s`;
             startCount--;
             if(startCount < 0) {
                 clearInterval(startIntv);
-                addLog("🚩 LIGHTS OUT! BALAPAN DIMULAI!", "danger");
-                mainTimer = setInterval(updateClockAndLogic, 1000);
-                updateClockAndLogic(); // Run first tick immediately
+                timer = setInterval(updateClock, 1000);
+                updateClock();
             }
         }, 1000);
 
