@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Race Compact Timer</title>
+    <title>Race Dynamic Timer</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -21,7 +21,7 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             font-family: 'Roboto', sans-serif;
-            height: 100dvh; /* Dynamic viewport height for mobile */
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -40,7 +40,8 @@
         }
         .brand { font-family: 'Racing Sans One'; font-size: 18px; color: white; font-style: italic; }
         .brand span { color: var(--accent); }
-        .race-timer { 
+        .race-info { text-align: right; font-size: 11px; line-height: 1.3; }
+        .race-clock { 
             font-family: monospace; 
             font-size: 14px; 
             color: #fff; 
@@ -48,6 +49,8 @@
             padding: 4px 8px; 
             border-radius: 4px; 
             border: 1px solid #333;
+            display: inline-block;
+            margin-top: 2px;
         }
 
         /* --- MAIN SPLIT LAYOUT --- */
@@ -60,7 +63,7 @@
         /* LEFT: COMPACT TIMING TABLE */
         .timing-col {
             width: 35%;
-            min-width: 280px;
+            min-width: 260px;
             background: var(--bg-panel);
             border-right: 1px solid var(--border);
             display: flex;
@@ -77,8 +80,15 @@
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
-        .gap-toggle { color: #888; font-weight: normal; cursor: pointer; }
+        .gap-toggle { 
+            color: #888; 
+            font-weight: normal; 
+            font-size: 9px;
+            transition: color 0.3s;
+        }
+        .gap-toggle.active { color: #00d2be; }
         
         .timing-list {
             flex: 1;
@@ -88,20 +98,19 @@
         
         .t-row {
             display: grid;
-            grid-template-columns: 25px 1fr 30px 55px;
+            grid-template-columns: 22px 1fr 28px 50px;
             align-items: center;
-            padding: 8px 10px;
+            padding: 7px 10px;
             border-bottom: 1px solid #222;
             font-size: 12px;
         }
         .t-row.player { background: rgba(255, 215, 0, 0.08); }
         
-        .t-pos { font-weight: bold; color: #666; font-size: 13px; }
-        .t-driver { display: flex; align-items: center; gap: 6px; overflow: hidden; }
-        .team-stripe { width: 3px; height: 14px; border-radius: 1px; flex-shrink: 0; }
+        .t-pos { font-weight: bold; color: #666; font-size: 12px; }
+        .t-driver { display: flex; align-items: center; gap: 5px; overflow: hidden; }
+        .team-stripe { width: 3px; height: 12px; border-radius: 1px; flex-shrink: 0; }
         .d-code { font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* Tyre Badge Tiny */
         .tyre-badge {
             width: 14px; height: 14px; border-radius: 3px;
             font-size: 8px; font-weight: bold;
@@ -174,11 +183,9 @@
         .nav-item.active { color: var(--accent); }
         .nav-icon { font-size: 20px; }
 
-        /* Mobile Adjustments */
         @media (max-width: 480px) {
             .timing-col { width: 40%; min-width: unset; }
-            .t-row { grid-template-columns: 20px 1fr 25px 45px; padding: 6px 8px; font-size: 11px; }
-            .d-code { font-size: 12px; }
+            .t-row { grid-template-columns: 20px 1fr 24px 42px; padding: 6px 8px; font-size: 11px; }
         }
     </style>
 </head>
@@ -187,7 +194,10 @@
     <!-- Header -->
     <div class="app-header">
         <div class="brand">GRID <span>LIVE</span></div>
-        <div class="race-timer" id="race-clock">10:00</div>
+        <div class="race-info">
+            <div style="color:#888">TARGET: 10 MINUTES</div>
+            <div class="race-clock" id="race-clock">10:00</div>
+        </div>
     </div>
 
     <!-- Main Split Content -->
@@ -197,7 +207,7 @@
         <div class="timing-col">
             <div class="col-head">
                 <span>Classification</span>
-                <span class="gap-toggle" id="gap-label">GAP TO LEADER</span>
+                <span class="gap-toggle active" id="gap-label">GAP TO LEADER</span>
             </div>
             <div class="timing-list" id="timing-list"></div>
         </div>
@@ -215,7 +225,7 @@
     <!-- Bottom Navigation Footer -->
     <div class="nav-footer">
         <a href="#" class="nav-item active">
-            <span class="nav-icon"></span>
+            <span class="nav-icon">🏠</span>
             <span>Dashboard</span>
         </a>
         <a href="#" class="nav-item">
@@ -223,7 +233,7 @@
             <span>Stats</span>
         </a>
         <a href="#" class="nav-item">
-            <span class="nav-icon">⚙️</span>
+            <span class="nav-icon">️</span>
             <span>Settings</span>
         </a>
     </div>
@@ -239,7 +249,9 @@
             { n: "Grid FC", c: "#FFD700" }
         ];
 
-        // Driver Codes (3 Letters)
+        const TOTAL_LAPS = 53;
+        const TOTAL_TIME_SECONDS = 600; // 10 minutes exactly
+
         let drivers = [
             { code: "VER", full: "Max Verstappen", t: 0, p: 1, g: 0, tyre: "M", status: "Track" },
             { code: "PER", full: "Sergio Perez", t: 0, p: 2, g: 2.1, tyre: "M", status: "Track" },
@@ -251,7 +263,6 @@
             { code: "PIA", full: "Oscar Piastri", t: 3, p: 8, g: 13.0, tyre: "M", status: "Track" },
             { code: "ALO", full: "Fernando Alonso", t: 4, p: 9, g: 15.5, tyre: "H", status: "Track" },
             { code: "STR", full: "Lance Stroll", t: 4, p: 10, g: 18.2, tyre: "H", status: "Track" },
-            // PLAYER
             { code: "YOU", full: "You (Player)", t: 10, p: 11, g: 19.5, tyre: "M", status: "Track", isP: true }, 
             { code: "GAS", full: "Pierre Gasly", t: 5, p: 12, g: 20.1, tyre: "M", status: "Track" },
             { code: "OCO", full: "Esteban Ocon", t: 5, p: 13, g: 21.5, tyre: "M", status: "Track" },
@@ -266,10 +277,11 @@
             { code: "COL", full: "Franco Colapinto", t: 6, p: 22, g: 45.0, tyre: "S", status: "Track" }
         ];
 
-        let lap = 0;
-        let timer;
-        let raceTimeLeft = 600; // 10 minutes in seconds
-        let showGapToLeader = true; // Toggle state for gap/interval
+        let currentLap = 0;
+        let raceTimeLeft = TOTAL_TIME_SECONDS;
+        let showGapToLeader = true;
+        let mainTimer;
+        let simTimer;
 
         // --- RENDER FUNCTIONS ---
         function renderTiming() {
@@ -279,9 +291,8 @@
 
             drivers.forEach(d => {
                 const team = TEAMS[d.t];
-                
-                // Logic Gap vs Interval
                 let infoText = "";
+                
                 if (showGapToLeader) {
                     infoText = d.p === 1 ? "LEADER" : `+${d.g.toFixed(1)}s`;
                 } else {
@@ -316,13 +327,13 @@
             const feed = document.getElementById('feed');
             const div = document.createElement('div');
             div.className = `c-item ${type}`;
-            div.innerHTML = `<span class="c-lap">L${lap}</span> ${text}`;
+            div.innerHTML = `<span class="c-lap">L${currentLap}</span> ${text}`;
             feed.prepend(div);
         }
 
-        // --- SIMULATION LOGIC ---
+        // --- DYNAMIC LAP SIMULATION ---
         function simulateLap() {
-            lap++;
+            currentLap++;
             
             // Update Gaps & Tyres
             drivers.forEach(d => {
@@ -331,7 +342,7 @@
                     if(d.g < 0.5 && d.p !== 1) d.g = 0.5;
                     
                     // Random Pit Stop
-                    if(Math.random() > 0.98) {
+                    if(Math.random() > 0.97) {
                         d.status = "PIT";
                         d.tyre = "M";
                         addLog(`${d.full} masuk pit untuk ganti ban Medium.`, "strat");
@@ -356,7 +367,7 @@
             renderTiming();
         }
 
-        function updateClock() {
+        function updateClockAndLogic() {
             raceTimeLeft--;
             const mins = Math.floor(raceTimeLeft / 60);
             const secs = raceTimeLeft % 60;
@@ -368,33 +379,53 @@
                 showGapToLeader = !showGapToLeader;
                 const label = document.getElementById('gap-label');
                 label.innerText = showGapToLeader ? "GAP TO LEADER" : "INTERVAL";
-                label.style.color = showGapToLeader ? "#888" : "#00d2be";
-                renderTiming(); // Re-render to update values
+                label.classList.toggle('active', showGapToLeader);
+                renderTiming();
             }
 
+            // End Race
             if (raceTimeLeft <= 0) {
-                clearInterval(timer);
+                clearInterval(mainTimer);
+                clearInterval(simTimer);
                 addLog("🏁 CHECKERED FLAG! Balapan Selesai.", "danger");
                 document.getElementById('race-clock').innerText = "FINISHED";
                 document.getElementById('race-clock').style.color = "#ff1801";
-            } else if (raceTimeLeft === 594) { // Start simulation after 6s countdown
-                 timer = setInterval(simulateLap, 1000);
-                 addLog("🚩 LIGHTS OUT! BALAPAN DIMULAI!", "danger");
+                return;
+            }
+
+            // Calculate Dynamic Lap Duration
+            // Rumus: Sisa Waktu / Sisa Lap = Durasi Lap Berikutnya
+            const lapsRemaining = TOTAL_LAPS - currentLap;
+            let nextLapDuration = 1000; // Default 1 second tick
+            
+            if (lapsRemaining > 0) {
+                // Kita bagi sisa waktu (dalam ms) dengan sisa lap
+                // Ditambah sedikit variasi acak agar tidak terlalu robotik
+                const baseDuration = (raceTimeLeft * 1000) / lapsRemaining;
+                const variation = (Math.random() - 0.5) * (baseDuration * 0.1); // +/- 5% variasi
+                nextLapDuration = Math.max(1000, baseDuration + variation);
+            }
+
+            // Restart simulation timer with new dynamic duration
+            clearInterval(simTimer);
+            if (currentLap < TOTAL_LAPS) {
+                simTimer = setInterval(simulateLap, nextLapDuration);
             }
         }
 
         // --- INIT ---
         renderTiming();
         
-        // Auto Start Countdown & Timer
+        // Auto Start Sequence
         let startCount = 5;
         const startIntv = setInterval(() => {
             document.getElementById('race-clock').innerText = `START ${startCount}s`;
             startCount--;
             if(startCount < 0) {
                 clearInterval(startIntv);
-                timer = setInterval(updateClock, 1000);
-                updateClock(); // Run immediately
+                addLog("🚩 LIGHTS OUT! BALAPAN DIMULAI!", "danger");
+                mainTimer = setInterval(updateClockAndLogic, 1000);
+                updateClockAndLogic(); // Run first tick immediately
             }
         }, 1000);
 
